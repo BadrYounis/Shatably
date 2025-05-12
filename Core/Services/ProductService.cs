@@ -65,7 +65,7 @@ namespace Services
         {
             var product = await _productRepository.Value.GetByIdAsync(productId);
             if (product is null)
-                throw new NotFoundException("Product not found.");
+                throw new ProductNotFoundException(productId);
             product.name = dto.Name;
             product.category = dto.Category;
             product.price = dto.Price;
@@ -77,7 +77,7 @@ namespace Services
         {
             var product = await _productRepository.Value.GetByIdAsync(productId);
             if (product is null)
-                throw new NotFoundException("Product not found.");
+                throw new ProductNotFoundException(productId);
 
             _productRepository.Value.Delete(product);
             await _unitOfWork.SaveChangesAsync();
