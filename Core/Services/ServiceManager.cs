@@ -23,7 +23,7 @@ namespace Services
             _productService = new Lazy<IProductService>(() => new ProductService(unitOfWork));
             _basketService = new Lazy<IBasketService>(() => new BasketService(_basketRepository));
             _projectPortfolioService = new Lazy<IProjectPortfolioService>(() => new ProjectPortfolioService(unitOfWork));
-            _AuthService = new Lazy<IAuthService>(() => new AuthService(_userManager, _options, _emailService, _httpContextAccessor, _linkGenerator));
+            _AuthService = new Lazy<IAuthService>(() => new AuthService(_userManager, _options, _emailService, _httpContextAccessor));
         }
         public IProductService ProductService => _productService.Value;
         public IBasketService BasketService => _basketService.Value;

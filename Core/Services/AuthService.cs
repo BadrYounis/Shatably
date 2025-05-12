@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Exceptions;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
@@ -16,7 +17,7 @@ using System.Web;
 namespace Services
 {
     public class AuthService(UserManager<User> _userManager, IOptions<JwtOptions> _options, IEmailService _emailService
-        , IHttpContextAccessor _httpContextAccessor, LinkGenerator _linkGenerator): IAuthService
+        , IHttpContextAccessor _httpContextAccessor): IAuthService
     {
         public async Task<UserLoginDto> Login(LoginDto loginDto)
         {
@@ -80,10 +81,10 @@ namespace Services
             var resetUrl = $"http://localhost:7242/ResetPassword.html?email={Uri.EscapeDataString(user.Email!)}&token={Uri.EscapeDataString(token)}";
 
             var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "Emails", "PasswordResetTemplate.html");
-            var htmlTemplate = await File.ReadAllTextAsync(templatePath);
+            var htmlTemplate = await System.IO.File.ReadAllTextAsync(templatePath);
 
             var body = htmlTemplate
-                .Replace("{resetUrl}", resetUrl ?? "")
+                .Replace("{resetUrl}", resetUrl)
                 .Replace("{year}", DateTime.Now.Year.ToString());
 
             await _emailService.SendEmailAsync(user.Email!, "Reset Your Password", body);
@@ -102,6 +103,10 @@ namespace Services
             var result = await _userManager.ResetPasswordAsync(user, decodedToken, dto.NewPassword);
 
             return result;
+        }
+        public async Task SignOutAsync()
+        {
+            await _httpContextAccessor.HttpContext.SignOutAsync();
         }
         private async Task<string> CreateTokenAsync(User user)
         {
@@ -138,5 +143,7 @@ namespace Services
             // Return the JWT token
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        
     }
 }
