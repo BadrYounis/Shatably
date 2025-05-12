@@ -35,10 +35,12 @@ namespace Services
         public async Task<ProductDto> GetByIdAsync(Guid productId)
         {
             var product = await _productRepository.Value.GetByIdAsync(new ProductWithCategorySpecifications(productId));
-           // var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(new ProductWithCategorySpecifications(productId));
-            if (product is null)
-                throw new NotFoundException("Product not found.");
-            return MapToDto(product);
+            // var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(new ProductWithCategorySpecifications(productId));
+            //if (product is null)
+            //    throw new NotFoundException("Product not found.");
+            //return MapToDto(product);
+            return product is null ? throw new ProductNotFoundException(productId) : MapToDto(product);
+
         }
         public async Task<IEnumerable<ProductDto>> GetByCategoryAsync(string category)
         {
