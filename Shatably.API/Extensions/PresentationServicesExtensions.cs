@@ -1,4 +1,6 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using E_Commerce.API.Factories;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 
 namespace Shatably.API.Extensions
 {
@@ -7,6 +9,11 @@ namespace Shatably.API.Extensions
         public static IServiceCollection AddPresentationServices(this IServiceCollection services)
         {
             services.AddControllers().AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = ApiResponseFactory.CustomValidationErrorResponse;//Func=> Return IActionResult, Take ActionContext as a parameter
+            });
+
             services.configureSwagger();
             return services;
         }

@@ -25,6 +25,8 @@ namespace Shatably.API
 
             #region Configuring Kestrel Middlewares
 
+            app.UseCustomExceptionMiddleware();
+
             await app.SeedDbAsync();
 
             // Configure the HTTP request pipeline.

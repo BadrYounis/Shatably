@@ -35,7 +35,7 @@ namespace Services
           var project = await _projectRepository.Value.GetByIdAsync(new ProjectSpecifications(projectId));
            // var project = await _unitOfWork.GetRepository<ProjectPortfolio,Guid>().GetByIdAsync(new ProjectSpecifications(projectId));
             if (project is null)
-                throw new NotFoundException("Project Portfolio Not Found.");
+                throw new ProjectPortfolioNotFoundException(projectId);
             return MapToDto(project);
         }
         public async Task<Guid> CreateAsync(CreateProjectPortfolioDto dto)
@@ -57,7 +57,7 @@ namespace Services
         {
             var project = await _projectRepository.Value.GetByIdAsync(projectId);
             if (project is null)
-                throw new NotFoundException("Project Portfolio Not Found.");
+                throw new ProjectPortfolioNotFoundException(projectId);
             project.Title = dto.Title;
             project.description = dto.Description;
             project.imageUrl = dto.ImageUrl;
