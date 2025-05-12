@@ -1,0 +1,30 @@
+[
+    {
+        "templateId": "19c3b9aa-a5d4-4f80-a883-142cc8aa727e",
+        "name": "Template 0",
+        "category": "Modern",
+        "imageUrl": "template0.jpg",
+        "description": "A modern design template."
+    },
+    {
+        "templateId": "38104cc8-e73d-4515-8442-e0c344ebe5f9",
+        "name": "Template 1",
+        "category": "Modern",
+        "imageUrl": "template1.jpg",
+        "description": "A modern design template."
+    },
+    {
+        "templateId": "8e616aef-7ba1-4ec1-9246-a1ea7a978ec4",
+        "name": "Template 2",
+        "category": "Modern",
+        "imageUrl": "template2.jpg",
+        "description": "A modern design template."
+    },
+    {
+        "templateId": "b735ebe4-2a7c-4f75-9cb7-3521d72ba7c6",
+        "name": "Template 3",
+        "category": "Modern",
+        "imageUrl": "template3.jpg",
+        "description": "A modern design template."
+    }
+]

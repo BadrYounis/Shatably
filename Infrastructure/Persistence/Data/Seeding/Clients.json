@@ -1,0 +1,57 @@
+[
+    {
+        "ClientId": "66df9c31-d768-44e0-a8dc-24e0b7a8e8fd",
+        "fullName": "Client 0",
+        "email": "client0@email.com",
+        "phoneNumber": "011110000",
+        "Address": {
+            "city": "Cairo",
+            "region": "Nasr City",
+            "street": "Street 0"
+        }
+    },
+    {
+        "ClientId": "3a39d754-b7c1-48a5-a544-ebcd1a996e61",
+        "fullName": "Client 1",
+        "email": "client1@email.com",
+        "phoneNumber": "011110001",
+        "Address": {
+            "city": "Cairo",
+            "region": "Nasr City",
+            "street": "Street 1"
+        }
+    },
+    {
+        "ClientId": "4f2f33f6-24da-4287-a4b3-d3160c9bef7b",
+        "fullName": "Client 2",
+        "email": "client2@email.com",
+        "phoneNumber": "011110002",
+        "Address": {
+            "city": "Cairo",
+            "region": "Nasr City",
+            "street": "Street 2"
+        }
+    },
+    {
+        "ClientId": "e31fe942-6f2b-4ceb-bb16-d71d3a1b1097",
+        "fullName": "Client 3",
+        "email": "client3@email.com",
+        "phoneNumber": "011110003",
+        "Address": {
+            "city": "Cairo",
+            "region": "Nasr City",
+            "street": "Street 3"
+        }
+    },
+    {
+        "ClientId": "ebee47fc-7360-4e5b-8bfb-092d28da3adf",
+        "fullName": "Client 4",
+        "email": "client4@email.com",
+        "phoneNumber": "011110004",
+        "Address": {
+            "city": "Cairo",
+            "region": "Nasr City",
+            "street": "Street 4"
+        }
+    }
+]

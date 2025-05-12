@@ -1,0 +1,42 @@
+[
+    {
+        "productId": "a6ab1776-8fd1-4299-a280-7ab328f79652",
+        "name": "Product 0",
+        "category": "Furniture",
+        "price": 2375.74,
+        "stockAmount": 7,
+        "isPackage": false
+    },
+    {
+        "productId": "723d2a73-9eaf-43ec-8b59-980f653ec53e",
+        "name": "Product 1",
+        "category": "Furniture",
+        "price": 3099.99,
+        "stockAmount": 17,
+        "isPackage": true
+    },
+    {
+        "productId": "4c51546a-e834-42bb-82ba-9260a20c16b6",
+        "name": "Product 2",
+        "category": "Furniture",
+        "price": 4760.41,
+        "stockAmount": 17,
+        "isPackage": false
+    },
+    {
+        "productId": "5a1d5f82-7b26-48e2-ab06-77baca5501ef",
+        "name": "Product 3",
+        "category": "Furniture",
+        "price": 2567.93,
+        "stockAmount": 5,
+        "isPackage": true
+    },
+    {
+        "productId": "629ee045-93e6-4bc2-b118-42ce598d1f9b",
+        "name": "Product 4",
+        "category": "Furniture",
+        "price": 2466.96,
+        "stockAmount": 11,
+        "isPackage": false
+    }
+]
