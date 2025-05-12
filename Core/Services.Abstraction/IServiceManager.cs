@@ -6,5 +6,6 @@
         public IBasketService BasketService { get; }
         public IProjectPortfolioService ProjectPortfolioService { get; }
         public IAuthService AuthService { get; }
+        public IDesignTemplateService DesignTemplateService { get; }
     }
 }

@@ -68,7 +68,7 @@ namespace Services
         {
             var project = await _projectRepository.Value.GetByIdAsync(projectId);
             if (project is null)
-                throw new NotFoundException("Project Portfolio Not Found.");
+                throw new ProjectPortfolioNotFoundException(projectId);
             _projectRepository.Value.Delete(project);
             await _unitOfWork.SaveChangesAsync();
         }
