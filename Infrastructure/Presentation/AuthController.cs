@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Services.Abstraction;
 using Shared;
 
@@ -9,7 +10,7 @@ namespace Presentation
     public class AuthController(IServiceManager _serviceManager) : ControllerBase
     {
         //BaseUrl/api/Auth/login
-        [HttpPost("login")]  
+        [HttpPost("login")]
         public async Task<ActionResult<UserResultDto>> Login(LoginDto loginDto)
         {
             var login = await _serviceManager.AuthService.Login(loginDto);
@@ -17,7 +18,7 @@ namespace Presentation
         }
 
         //BaseUrl/api/Auth/register
-        [HttpPost("register")]  
+        [HttpPost("register")]
         public async Task<ActionResult<UserResultDto>> Register(RegisterDto registerDto)
         {
             var register = await _serviceManager.AuthService.Register(registerDto);
@@ -25,7 +26,7 @@ namespace Presentation
         }
 
         //BaseUrl/api/Auth/forgot-password
-        [HttpPost("forgot-password")] 
+        [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO dto)
         {
             var result = await _serviceManager.AuthService.ForgotPasswordAsync(dto);
@@ -54,6 +55,15 @@ namespace Presentation
                 });
             }
             return Ok(new { message = "Password has been reset successfully." });
+        }
+
+        //BaseUrl/api/Auth/signout
+        [HttpPost("signout")]
+        [Authorize]
+        public async Task<IActionResult> SignOut()
+        {
+            await _serviceManager.AuthService.SignOutAsync();
+            return Ok(new { message = "Signed Out Successfully" });
         }
     }
 }

@@ -18,7 +18,10 @@ namespace Shatably.API
             builder.Services.AddCoreServices(builder.Configuration);
 
             //Infrastructure Services
-            builder.Services.AddInfrastructureServices(builder.Configuration); 
+            builder.Services.AddInfrastructureServices(builder.Configuration);
+
+            //Security Services
+            builder.Services.AddJwtAuthentication(builder.Configuration);
             #endregion
 
             var app = builder.Build();
@@ -38,7 +41,9 @@ namespace Shatably.API
 
             app.UseHttpsRedirection();
 
-            app.UseStaticFiles(); 
+            app.UseStaticFiles();
+
+            app.UseRouting();
 
             app.UseAuthentication();
 

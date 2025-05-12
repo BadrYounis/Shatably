@@ -10,5 +10,6 @@ namespace Services.Abstraction
         Task<bool> ForgotPasswordAsync(ForgotPasswordDTO dto);
         Task<IdentityResult> ResetPasswordAsync(ResetPasswordDTO dto);
 
+        Task SignOutAsync();
     }
 }
