@@ -37,8 +37,12 @@ namespace Presentation
         public async Task<IActionResult> Create([FromBody] CreateProductDto dto)
         {
             var id = await _serviceManager.ProductService.CreateAsync(dto);
-            var product = await _serviceManager.ProductService.GetByIdAsync(id);
-            return CreatedAtAction(nameof(GetById), new { id }, product);
+            var created = await _serviceManager.ProductService.GetByIdAsync(id);
+            return CreatedAtAction(nameof(GetById), new { id }, new
+            {
+                message = "Product Added Successfully",
+                data = created
+            });
         }
 
         // PUT: api/product/{id}

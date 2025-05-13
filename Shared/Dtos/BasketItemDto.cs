@@ -3,7 +3,7 @@
 namespace Shared;
 public class BasketItemDto
 {
-    public Guid ProductId { get; set; }
+    //public Guid ProductId { get; set; }
     public string ProductName { get; set; } = string.Empty;
     [Range(1, double.MaxValue)]
     public decimal Price { get; set; }

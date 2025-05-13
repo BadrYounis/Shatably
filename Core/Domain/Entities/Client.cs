@@ -8,5 +8,5 @@ public class Client
     public Address? Address { get; set; }
     public ICollection<Order> Orders { get; set; } = new HashSet<Order>();
     public ICollection<RatingReview> RatingReviews { get; set; } = new HashSet<RatingReview>();
-    //public ICollection<ServiceBooking> ServiceBookings { get; set; } = new HashSet<ServiceBooking>();
+    public ICollection<ServiceBooking> ServiceBookings { get; set; } = new HashSet<ServiceBooking>();
 }

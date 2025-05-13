@@ -7,5 +7,6 @@
         public IProjectPortfolioService ProjectPortfolioService { get; }
         public IAuthService AuthService { get; }
         public IDesignTemplateService DesignTemplateService { get; }
+        public IWorkerService WorkerService { get; }
     }
 }
