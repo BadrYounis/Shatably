@@ -32,7 +32,7 @@ namespace Services
             Username = basket.Username,
             Items = basket.Items.Select(item => new BasketItemDto
             {
-                ProductId = item.ProductId,
+                //ProductId = item.ProductId,
                 ProductName = item.ProductName,
                 Price = item.Price,
                 Quantity = item.Quantity
@@ -45,7 +45,7 @@ namespace Services
             Username = dto.Username,
             Items = dto.Items.Select(item => new BasketItem
             {
-                ProductId = item.ProductId,
+                //ProductId = item.ProductId,
                 ProductName = item.ProductName,
                 Price = item.Price,
                 Quantity = item.Quantity

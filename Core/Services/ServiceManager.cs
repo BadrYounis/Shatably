@@ -17,6 +17,7 @@ namespace Services
         private readonly Lazy<IProjectPortfolioService> _projectPortfolioService;
         private readonly Lazy<IAuthService> _AuthService;
         private readonly Lazy<IDesignTemplateService> _DesignTemplateService;
+        private readonly Lazy<IWorkerService> _workerService;
         public ServiceManager(IUnitOfWork unitOfWork, IBasketRepository _basketRepository, UserManager<User> _userManager,
             IOptions<JwtOptions> _options, AppDbContext _context, IEmailService _emailService
             , IHttpContextAccessor _httpContextAccessor, LinkGenerator _linkGenerator)
@@ -29,11 +30,14 @@ namespace Services
 
             _DesignTemplateService = new Lazy<IDesignTemplateService>(()=> new DesignTemplateService(unitOfWork));
 
+            _workerService = new Lazy<IWorkerService>(() => new WorkerService(unitOfWork));
+
         }
         public IProductService ProductService => _productService.Value;
         public IBasketService BasketService => _basketService.Value;
         public IProjectPortfolioService ProjectPortfolioService => _projectPortfolioService.Value;
         public IAuthService AuthService => _AuthService.Value;
         public IDesignTemplateService DesignTemplateService=>_DesignTemplateService.Value;
+        public IWorkerService WorkerService => _workerService.Value;
     }
 }

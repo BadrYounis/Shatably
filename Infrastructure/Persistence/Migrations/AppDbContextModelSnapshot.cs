@@ -255,6 +255,40 @@ namespace Persistence.Migrations
                     b.ToTable("SelectedDesigns");
                 });
 
+            modelBuilder.Entity("Domain.ServiceBooking", b =>
+                {
+                    b.Property<Guid>("bookingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TimeSlot")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("WorkerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("bookingDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("bookingId");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("ServiceBookings", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Worker", b =>
                 {
                     b.Property<Guid>("workerId")
@@ -408,11 +442,32 @@ namespace Persistence.Migrations
                     b.Navigation("ProjectPortfolio");
                 });
 
+            modelBuilder.Entity("Domain.ServiceBooking", b =>
+                {
+                    b.HasOne("Domain.Client", "Client")
+                        .WithMany("ServiceBookings")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Worker", "Worker")
+                        .WithMany("ServiceBookings")
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Worker");
+                });
+
             modelBuilder.Entity("Domain.Client", b =>
                 {
                     b.Navigation("Orders");
 
                     b.Navigation("RatingReviews");
+
+                    b.Navigation("ServiceBookings");
                 });
 
             modelBuilder.Entity("Domain.DesignTemplate", b =>
@@ -437,6 +492,8 @@ namespace Persistence.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("RatingReviews");
+
+                    b.Navigation("ServiceBookings");
                 });
 #pragma warning restore 612, 618
         }

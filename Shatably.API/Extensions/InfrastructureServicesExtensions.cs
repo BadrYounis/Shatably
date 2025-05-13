@@ -39,8 +39,18 @@ namespace Shatably.API.Extensions
             services.AddScoped<IBasketRepository, BasketRepository>();
 
             //Basket
-            services.AddSingleton<IConnectionMultiplexer>(
-                services => ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")!));
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                var configOptions = new ConfigurationOptions
+                {
+                    EndPoints = { "better-amoeba-29825.upstash.io:6379" },
+                    Password = "AXSBAAIjcDE2YTgyYTIzZDdiZGM0Y2I4OTc3M2MzYWIyNWRkYzBlY3AxMA",
+                    User = "default",
+                    Ssl = true,
+                    AbortOnConnectFail = false
+                };
+                return ConnectionMultiplexer.Connect(configOptions);
+            });
             return services;
         }
 
