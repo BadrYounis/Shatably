@@ -13,7 +13,7 @@ namespace Services.Specifications
     {
         public ProjectSpecifications(Guid Id):base(project=>project.projectId==Id)
         {
-            
+            AddInclude(p => p.Images); // Include الصور
         }
         public ProjectSpecifications(ProjectSpecificationsParameters parameters)
            : base(project =>

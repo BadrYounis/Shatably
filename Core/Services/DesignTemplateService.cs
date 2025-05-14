@@ -1,16 +1,15 @@
-﻿using Domain.Contracts;
-using Domain;
+﻿using Domain;
+using Domain.Contracts;
+using Domain.Exceptions;
 using Services.Abstraction;
+using Services.Specifications;
 using Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Shared.Dtos;
+
 using Services.Specifications;
 using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
+
 
 namespace Services
 {

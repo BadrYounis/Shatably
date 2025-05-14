@@ -1,6 +1,7 @@
 ﻿using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace Persistence.Data;
 public class ProjectPortfolioConfiguration : IEntityTypeConfiguration<ProjectPortfolio>
@@ -19,11 +20,16 @@ public class ProjectPortfolioConfiguration : IEntityTypeConfiguration<ProjectPor
         builder.Property(p => p.description)
             .HasMaxLength(1000); 
 
-        builder.Property(p => p.imageUrl)
+        builder.Property(p => p.MainImageUrl)
             .HasMaxLength(250); 
 
         builder.Property(p => p.createdDate)
-            .HasDefaultValueSql("GETDATE()") 
+            .HasDefaultValueSql("GETDATE()")
             .IsRequired();
+
+        builder.HasMany(p => p.Images)
+            .WithOne(i => i.ProjectPortfolio)
+            .HasForeignKey(i => i.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

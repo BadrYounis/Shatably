@@ -9,7 +9,7 @@ public class RatingReview
     // Navigation Properties
     public Worker Worker { get; set; } // The worker being reviewed
     public Guid WorkerId { get; set; }        // Foreign Key to WorkerProfile
-    public Client Client { get; set; } // The client who wrote the review}
+    public Client Client { get; set; } // The client who wrote the review
     public Guid ClientId { get; set; }        // Foreign Key to ClientProfile
 
 }

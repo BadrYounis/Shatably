@@ -167,11 +167,36 @@ namespace Persistence.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Domain.ProjectImages", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectImages");
+                });
+
             modelBuilder.Entity("Domain.ProjectPortfolio", b =>
                 {
                     b.Property<Guid>("projectId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("MainImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -187,11 +212,6 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("imageUrl")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
 
                     b.HasKey("projectId");
 
@@ -253,6 +273,40 @@ namespace Persistence.Migrations
                     b.HasIndex("ProjectPortfolioId");
 
                     b.ToTable("SelectedDesigns");
+                });
+
+            modelBuilder.Entity("Domain.ServiceBooking", b =>
+                {
+                    b.Property<Guid>("bookingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TimeSlot")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("WorkerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("bookingDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("bookingId");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("ServiceBookings", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Worker", b =>
@@ -364,6 +418,17 @@ namespace Persistence.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Domain.ProjectImages", b =>
+                {
+                    b.HasOne("Domain.ProjectPortfolio", "ProjectPortfolio")
+                        .WithMany("Images")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProjectPortfolio");
+                });
+
             modelBuilder.Entity("Domain.RatingReview", b =>
                 {
                     b.HasOne("Domain.Client", "Client")
@@ -408,11 +473,32 @@ namespace Persistence.Migrations
                     b.Navigation("ProjectPortfolio");
                 });
 
+            modelBuilder.Entity("Domain.ServiceBooking", b =>
+                {
+                    b.HasOne("Domain.Client", "Client")
+                        .WithMany("ServiceBookings")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Worker", "Worker")
+                        .WithMany("ServiceBookings")
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Worker");
+                });
+
             modelBuilder.Entity("Domain.Client", b =>
                 {
                     b.Navigation("Orders");
 
                     b.Navigation("RatingReviews");
+
+                    b.Navigation("ServiceBookings");
                 });
 
             modelBuilder.Entity("Domain.DesignTemplate", b =>
@@ -432,11 +518,18 @@ namespace Persistence.Migrations
                     b.Navigation("OrderItems");
                 });
 
+            modelBuilder.Entity("Domain.ProjectPortfolio", b =>
+                {
+                    b.Navigation("Images");
+                });
+
             modelBuilder.Entity("Domain.Worker", b =>
                 {
                     b.Navigation("Orders");
 
                     b.Navigation("RatingReviews");
+
+                    b.Navigation("ServiceBookings");
                 });
 #pragma warning restore 612, 618
         }
