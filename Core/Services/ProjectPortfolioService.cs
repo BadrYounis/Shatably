@@ -1,6 +1,7 @@
 ﻿using Domain;
 using Domain.Contracts;
 using Domain.Exceptions;
+using Microsoft.Extensions.Configuration;
 using Services.Abstraction;
 using Services.Specifications;
 using Shared;
@@ -11,15 +12,18 @@ namespace Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly Lazy<IGenericRepository<ProjectPortfolio, Guid>> _projectRepository;
-        public ProjectPortfolioService(IUnitOfWork unitOfWork)
+        private readonly string? _imageBaseUrl;
+
+        public ProjectPortfolioService(IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _projectRepository = new Lazy<IGenericRepository<ProjectPortfolio, Guid>>(() => _unitOfWork.GetRepository<ProjectPortfolio, Guid>());
+            _imageBaseUrl = configuration["BaseUrls:ImageBaseUrl"];
         }
         public async Task<PaginatedResult<ProjectPortfolioDto>> GetAllAsync(ProjectSpecificationsParameters parameters)
         {
-          var projects = await _projectRepository.Value.GetAllAsync(new ProjectSpecifications(parameters));     //guid???
-           // var projects=await _unitOfWork.GetRepository<ProjectPortfolio,Guid>().GetAllAsync(new ProjectSpecifications(parameters));
+            var projects = await _projectRepository.Value.GetAllAsync(new ProjectSpecifications(parameters));     //guid???
+                                                                                                                  // var projects=await _unitOfWork.GetRepository<ProjectPortfolio,Guid>().GetAllAsync(new ProjectSpecifications(parameters));
             var totalCount = await _unitOfWork.GetRepository<ProjectPortfolio, Guid>().CountAsync(new ProjectCountSpecifications(parameters));
             var projectResult = projects.Select(MapToDto);
             var result = new PaginatedResult<ProjectPortfolioDto>(
@@ -32,8 +36,8 @@ namespace Services
         }
         public async Task<ProjectPortfolioDto> GetByIdAsync(Guid projectId)
         {
-          var project = await _projectRepository.Value.GetByIdAsync(new ProjectSpecifications(projectId));
-           // var project = await _unitOfWork.GetRepository<ProjectPortfolio,Guid>().GetByIdAsync(new ProjectSpecifications(projectId));
+            var project = await _projectRepository.Value.GetByIdAsync(new ProjectSpecifications(projectId));
+            // var project = await _unitOfWork.GetRepository<ProjectPortfolio,Guid>().GetByIdAsync(new ProjectSpecifications(projectId));
             if (project is null)
                 throw new ProjectPortfolioNotFoundException(projectId);
             return MapToDto(project);
@@ -72,13 +76,18 @@ namespace Services
             _projectRepository.Value.Delete(project);
             await _unitOfWork.SaveChangesAsync();
         }
-        private static ProjectPortfolioDto MapToDto(ProjectPortfolio project) => new ProjectPortfolioDto
+        private ProjectPortfolioDto MapToDto(ProjectPortfolio project)
         {
-            ProjectId = project.projectId,
-            Title = project.Title,
-            Description = project.description,
-            ImageUrl = project.imageUrl,
-            CreatedDate = project.createdDate
-        };
+            return new ProjectPortfolioDto
+            {
+                ProjectId = project.projectId,
+                Title = project.Title,
+                Description = project.description,
+                ImageUrl = string.IsNullOrEmpty(project.imageUrl)
+                ? null
+                : $"{_imageBaseUrl}/{project.imageUrl}",
+                CreatedDate = project.createdDate
+            };
+        }
     }
 }

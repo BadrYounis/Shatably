@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Shared.Dtos;
 using Services.Specifications;
 using Domain.Exceptions;
+using Microsoft.Extensions.Configuration;
 
 namespace Services
 {
@@ -17,11 +18,13 @@ namespace Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly Lazy<IGenericRepository<DesignTemplate, Guid>> _designTemplateRepository;
-        public DesignTemplateService(IUnitOfWork unitOfWork)
+        private readonly string? _imageBaseUrl;
+        public DesignTemplateService(IUnitOfWork unitOfWork , IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _designTemplateRepository = new Lazy<IGenericRepository<DesignTemplate, Guid>>(
                 () => _unitOfWork.GetRepository<DesignTemplate, Guid>());
+            _imageBaseUrl = configuration["BaseUrls:ImageBaseUrl"];
         }
         public async Task<PaginatedResult<DesignTemplateDto>> GetAllAsync(DesignTemplateSpecificationsParameters parameters)
         {
@@ -87,13 +90,15 @@ namespace Services
         }
 
         
-        private static DesignTemplateDto MapToDto(DesignTemplate design) => new DesignTemplateDto
+        private DesignTemplateDto MapToDto(DesignTemplate design) => new DesignTemplateDto
         {
              templateId= design.templateId,
              Name= design.name,
              Category= design.category,
              description= design.description,
-             imageUrl= design.imageUrl,
+            imageUrl = string.IsNullOrEmpty(design.imageUrl)
+                ? null
+                : $"{_imageBaseUrl}/{design.imageUrl}"
 
         };
     }

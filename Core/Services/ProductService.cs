@@ -1,6 +1,7 @@
 ﻿using Domain;
 using Domain.Contracts;
 using Domain.Exceptions;
+using Microsoft.Extensions.Configuration;
 using Services.Abstraction;
 using Services.Specifications;
 using Shared;
@@ -89,6 +90,7 @@ namespace Services
             Category = product.category,
             Price = product.price,
             StockAmount = product.stockAmount,
+            
         };
 
     }
