@@ -12,6 +12,6 @@ namespace Shared.Dtos
         public string fullName { get; set; }
         public string email { get; set; }
         public string phoneNumber { get; set; }
-        public string Address { get; set; }
+        public AddressDto Address { get; set; }
     }
 }

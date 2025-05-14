@@ -23,7 +23,7 @@ namespace Shared.Dtos
 
         [Required(ErrorMessage = "Address is required.")]
         [StringLength(100, ErrorMessage = "Address cannot exceed 100 characters.")]
-        public string Address { get; set; }
+        public AddressDto Address { get; set; }
 
     }
 }
