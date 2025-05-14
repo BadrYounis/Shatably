@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Exceptions
+{
+   public class ClientNotFoundException : NotFoundException
+    {
+        public ClientNotFoundException(Guid id) : base($"Client With Id: {id} Not Found")
+        {
+
+        }
+    }
+}
