@@ -1,6 +1,7 @@
 ﻿using Domain;
 using Domain.Contracts;
 using Domain.Exceptions;
+using Microsoft.Extensions.Configuration;
 using Services.Abstraction;
 using Shared;
 
@@ -9,11 +10,14 @@ public class WorkerService : IWorkerService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly Lazy<IGenericRepository<Worker, Guid>> _workerRepository;
-    public WorkerService(IUnitOfWork unitOfWork)
+    private readonly string? _imageBaseUrl;
+    public WorkerService(IUnitOfWork unitOfWork,IConfiguration configuration)
     {
         _unitOfWork = unitOfWork;
         _workerRepository = new Lazy<IGenericRepository<Worker, Guid>>(
                 () => _unitOfWork.GetRepository<Worker, Guid>());
+        _imageBaseUrl = configuration["BaseUrls:ImageBaseUrl"];
+
     }
     public async Task<IEnumerable<WorkerDto>> GetAllAsync()
     {
@@ -84,7 +88,7 @@ public class WorkerService : IWorkerService
         _workerRepository.Value.Delete(worker);
         await _unitOfWork.SaveChangesAsync();
     }
-    private static WorkerDto ToDto(Worker worker)
+    private  WorkerDto ToDto(Worker worker)
     {
         return new WorkerDto
         {
@@ -93,7 +97,9 @@ public class WorkerService : IWorkerService
             Email = worker.email,
             PhoneNumber = worker.phoneNumber,
             Type = worker.Type.ToString()!,
-            ProfilePhotoUrl = worker.ProfilePhotoUrl
+            ProfilePhotoUrl = string.IsNullOrEmpty(worker.ProfilePhotoUrl)
+                ? string.Empty
+                : $"{_imageBaseUrl}/{worker.ProfilePhotoUrl}"
         };
     }
 }

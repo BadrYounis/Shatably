@@ -36,7 +36,7 @@ namespace Services
             _DesignTemplateService = new Lazy<IDesignTemplateService>(()=> new DesignTemplateService(unitOfWork,configuration));
             _clientService=new Lazy<IClientService> (() => new ClientService(unitOfWork));
 
-            _workerService = new Lazy<IWorkerService>(() => new WorkerService(unitOfWork));
+            _workerService = new Lazy<IWorkerService>(() => new WorkerService(unitOfWork,configuration));
 
         }
         public IProductService ProductService => _productService.Value;

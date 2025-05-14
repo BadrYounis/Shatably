@@ -1,15 +1,16 @@
-﻿using Domain;
-using Domain.Contracts;
-using Domain.Exceptions;
+﻿using Domain.Contracts;
+using Domain;
 using Services.Abstraction;
-using Services.Specifications;
 using Shared;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Shared.Dtos;
-
 using Services.Specifications;
 using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
-
 
 namespace Services
 {
@@ -17,7 +18,7 @@ namespace Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly Lazy<IGenericRepository<DesignTemplate, Guid>> _designTemplateRepository;
-        private readonly string? _imageBaseUrl;
+        private  readonly string? _imageBaseUrl;
         public DesignTemplateService(IUnitOfWork unitOfWork , IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
@@ -89,14 +90,14 @@ namespace Services
         }
 
         
-        private DesignTemplateDto MapToDto(DesignTemplate design) => new DesignTemplateDto
+        private DesignTemplateDto MapToDto(DesignTemplate design ) => new DesignTemplateDto
         {
              templateId= design.templateId,
              Name= design.name,
              Category= design.category,
              description= design.description,
             imageUrl = string.IsNullOrEmpty(design.imageUrl)
-                ? null
+                ? string.Empty
                 : $"{_imageBaseUrl}/{design.imageUrl}"
 
         };

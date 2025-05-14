@@ -63,11 +63,11 @@ namespace Services
             var project = await _projectRepository.Value.GetByIdAsync(projectId);
             if (project is null)
                 throw new ProjectPortfolioNotFoundException(projectId);
-            
+
             project.Title = dto.Title;
             project.description = dto.Description;
             project.MainImageUrl = dto.ImageUrl;
-            
+
             //Add New Photos
             project.Images.Clear(); // Clear Current Photos
             if (dto.ImageUrls != null)
@@ -96,22 +96,23 @@ namespace Services
                 ProjectId = project.projectId,
                 Title = project.Title,
                 Description = project.description,
-                ImageUrl = string.IsNullOrEmpty(project.imageUrl)
-                ? null
-                : $"{_imageBaseUrl}/{project.imageUrl}",
+                mainImageUrl = string.IsNullOrEmpty(project.MainImageUrl)
+                ? string.Empty
+                : $"{_imageBaseUrl}/{project.MainImageUrl}",
+                ImageUrls = project.Images != null
+        ? new HashSet<string>(
+            project.Images
+                .Where(i => !string.IsNullOrEmpty(i.ImageUrl))
+                .Select(i => $"{_imageBaseUrl}/{i.ImageUrl}")
+          )
+        : new HashSet<string>(),
+
                 CreatedDate = project.createdDate
             };
         }
 
-            ProjectId = project.projectId,
-            Title = project.Title,
-            Description = project.description,
-            mainImageUrl = project.MainImageUrl,
-            ImageUrls = project.Images != null
-                ? new HashSet<string>(project.Images.Select(i => i.ImageUrl))
-                : new HashSet<string>(),
-            CreatedDate = project.createdDate
-        };
+
+
 
     }
 }
