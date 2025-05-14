@@ -37,12 +37,12 @@ namespace Services
                 fullName = dto.FullName,
                 email = dto.Email,
                 phoneNumber = dto.PhoneNumber,
-                client.Address = new Address
+                Address = new Address
                 {
                     city = dto.Address.city,
                     region = dto.Address.region,
                     street = dto.Address.street
-                };
+                }
             };
             await _clientRepository.Value.AddAsync(client);
             await _unitOfWork.SaveChangesAsync();
