@@ -167,11 +167,36 @@ namespace Persistence.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Domain.ProjectImages", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectImages");
+                });
+
             modelBuilder.Entity("Domain.ProjectPortfolio", b =>
                 {
                     b.Property<Guid>("projectId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("MainImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -187,11 +212,6 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("imageUrl")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
 
                     b.HasKey("projectId");
 
@@ -398,6 +418,17 @@ namespace Persistence.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Domain.ProjectImages", b =>
+                {
+                    b.HasOne("Domain.ProjectPortfolio", "ProjectPortfolio")
+                        .WithMany("Images")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProjectPortfolio");
+                });
+
             modelBuilder.Entity("Domain.RatingReview", b =>
                 {
                     b.HasOne("Domain.Client", "Client")
@@ -485,6 +516,11 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Product", b =>
                 {
                     b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("Domain.ProjectPortfolio", b =>
+                {
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("Domain.Worker", b =>
