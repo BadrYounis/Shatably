@@ -45,7 +45,8 @@ namespace Services
                 projectId = Guid.NewGuid(),
                 Title = dto.Title,
                 description = dto.Description,
-                imageUrl = dto.ImageUrl,
+                MainImageUrl = dto.mainImageUrl,
+                Images = dto.ImageUrls?.Select(url => new ProjectImages { ImageUrl = url }).ToList()!,
                 createdDate = DateTime.UtcNow
             };
 
@@ -58,9 +59,20 @@ namespace Services
             var project = await _projectRepository.Value.GetByIdAsync(projectId);
             if (project is null)
                 throw new ProjectPortfolioNotFoundException(projectId);
+            
             project.Title = dto.Title;
             project.description = dto.Description;
-            project.imageUrl = dto.ImageUrl;
+            project.MainImageUrl = dto.ImageUrl;
+            
+            //Add New Photos
+            project.Images.Clear(); // Clear Current Photos
+            if (dto.ImageUrls != null)
+            {
+                foreach (var url in dto.ImageUrls)
+                {
+                    project.Images.Add(new ProjectImages { ImageUrl = url });
+                }
+            }
             _projectRepository.Value.Update(project);
             await _unitOfWork.SaveChangesAsync();
         }
@@ -77,7 +89,10 @@ namespace Services
             ProjectId = project.projectId,
             Title = project.Title,
             Description = project.description,
-            ImageUrl = project.imageUrl,
+            mainImageUrl = project.MainImageUrl,
+            ImageUrls = project.Images != null
+                ? new HashSet<string>(project.Images.Select(i => i.ImageUrl))
+                : new HashSet<string>(),
             CreatedDate = project.createdDate
         };
     }

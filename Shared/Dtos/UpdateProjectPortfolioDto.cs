@@ -14,4 +14,5 @@ public class UpdateProjectPortfolioDto
     [Required(ErrorMessage = "Image URL is required.")]
     [Url(ErrorMessage = "Image URL must be a valid URL.")]
     public string ImageUrl { get; set; }
+    public HashSet<string>? ImageUrls { get; set; }
 }
