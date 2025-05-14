@@ -37,7 +37,12 @@ namespace Services
                 fullName = dto.FullName,
                 email = dto.Email,
                 phoneNumber = dto.PhoneNumber,
-                
+                client.Address = new Address
+                {
+                    city = dto.Address.city,
+                    region = dto.Address.region,
+                    street = dto.Address.street
+                };
             };
             await _clientRepository.Value.AddAsync(client);
             await _unitOfWork.SaveChangesAsync();
@@ -62,7 +67,12 @@ namespace Services
             client.email = dto.Email;
             client.phoneNumber = dto.PhoneNumber;
             client.fullName = dto.FullName;
-            //client.Address=dto.Address;
+            client.Address = new Address
+            {
+                city = dto.Address.city,
+                region = dto.Address.region,
+                street = dto.Address.street
+            };
         }
 
         private static ClientResultDto MapToDto(Client client) => new ClientResultDto
@@ -71,8 +81,12 @@ namespace Services
             fullName=client.fullName,
             phoneNumber=client.phoneNumber,
             email=client.email,
-            //Address=client.Address.ToString(),
-            
+            Address= client.Address is null ? throw new NotFoundException("Address is required!") : new AddressDto
+            {
+                city = client.Address.city,
+                region = client.Address.region,
+                street = client.Address.street,
+            },            
         };
     }
 }
