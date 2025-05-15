@@ -11,6 +11,7 @@
         public IClientService ClientService { get; }
 
         public IWorkerService WorkerService { get; }
+        public IOrderService OrderService { get; }
 
     }
 }

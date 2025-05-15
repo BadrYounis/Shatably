@@ -45,7 +45,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("ClientId");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
                 });
 
             modelBuilder.Entity("Domain.DesignTemplate", b =>
@@ -75,7 +75,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("templateId");
 
-                    b.ToTable("DesignTemplates");
+                    b.ToTable("DesignTemplates", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderEntities.DeliveryMethod", b =>
@@ -101,7 +101,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeliveryMethods");
+                    b.ToTable("DeliveryMethods", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderEntities.Order", b =>
@@ -145,7 +145,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("workerId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderEntities.OrderItem", b =>
@@ -167,7 +167,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Product", b =>
@@ -197,7 +197,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("productId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Domain.ProjectImages", b =>
@@ -217,7 +217,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectImages");
+                    b.ToTable("ProjectImages", (string)null);
                 });
 
             modelBuilder.Entity("Domain.ProjectPortfolio", b =>
@@ -251,7 +251,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("projectId");
 
-                    b.ToTable("ProjectPortfolios");
+                    b.ToTable("ProjectPortfolios", (string)null);
                 });
 
             modelBuilder.Entity("Domain.RatingReview", b =>
@@ -287,7 +287,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("WorkerId");
 
-                    b.ToTable("RatingReviews");
+                    b.ToTable("RatingReviews", (string)null);
                 });
 
             modelBuilder.Entity("Domain.ServiceBooking", b =>
@@ -367,12 +367,12 @@ namespace Persistence.Migrations
 
                     b.HasKey("workerId");
 
-                    b.ToTable("Workers");
+                    b.ToTable("Workers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Client", b =>
                 {
-                    b.OwnsOne("Domain.Address", "Address", b1 =>
+                    b.OwnsOne("Domain.Client.Address#Domain.Address", "Address", b1 =>
                         {
                             b1.Property<Guid>("ClientId")
                                 .HasColumnType("uniqueidentifier");
@@ -397,7 +397,7 @@ namespace Persistence.Migrations
 
                             b1.HasKey("ClientId");
 
-                            b1.ToTable("Clients");
+                            b1.ToTable("Clients", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ClientId");
@@ -423,7 +423,7 @@ namespace Persistence.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("workerId");
 
-                    b.OwnsOne("Domain.Entities.OrderEntities.Address", "ShippingAddress", b1 =>
+                    b.OwnsOne("Domain.Entities.OrderEntities.Order.ShippingAddress#Domain.Entities.OrderEntities.Address", "ShippingAddress", b1 =>
                         {
                             b1.Property<Guid>("OrderId")
                                 .HasColumnType("uniqueidentifier");
@@ -450,7 +450,7 @@ namespace Persistence.Migrations
 
                             b1.HasKey("OrderId");
 
-                            b1.ToTable("Orders");
+                            b1.ToTable("Orders", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");
@@ -470,7 +470,7 @@ namespace Persistence.Migrations
                         .WithMany("orderItems")
                         .HasForeignKey("OrderId");
 
-                    b.OwnsOne("Domain.Entities.OrderEntities.ProductInOrderItem", "Product", b1 =>
+                    b.OwnsOne("Domain.Entities.OrderEntities.OrderItem.Product#Domain.Entities.OrderEntities.ProductInOrderItem", "Product", b1 =>
                         {
                             b1.Property<Guid>("OrderItemId")
                                 .HasColumnType("uniqueidentifier");
@@ -488,7 +488,7 @@ namespace Persistence.Migrations
 
                             b1.HasKey("OrderItemId");
 
-                            b1.ToTable("OrderItems");
+                            b1.ToTable("OrderItems", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderItemId");
