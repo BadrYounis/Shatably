@@ -1,4 +1,6 @@
-﻿namespace Domain;
+﻿using Domain.Entities.OrderEntities;
+
+namespace Domain;
 public class Client
 {
     public Guid ClientId { get; set; }

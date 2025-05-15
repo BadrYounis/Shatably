@@ -38,6 +38,8 @@ public class WorkerConfiguration : IEntityTypeConfiguration<Worker>
             .HasForeignKey(rr => rr.WorkerId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.Property(w => w.Price).HasColumnType("decimal(18,2)");
+
         // If you add Schedules in the future:
         // builder.HasMany(w => w.Schedules)
         //        .WithOne(s => s.Worker)

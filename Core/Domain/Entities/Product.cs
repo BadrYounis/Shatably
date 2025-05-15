@@ -1,4 +1,6 @@
-﻿namespace Domain;
+﻿using Domain.Entities.OrderEntities;
+
+namespace Domain;
 public class Product
 {
     public Guid productId { get; set; }
@@ -7,5 +9,4 @@ public class Product
     public decimal price { get; set; }
     public int stockAmount { get; set; }
     public bool isPackage { get; set; }
-    public ICollection<OrderItem> OrderItems { get; set; }=new HashSet<OrderItem>();
 }

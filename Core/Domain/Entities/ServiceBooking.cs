@@ -9,4 +9,6 @@ public class ServiceBooking
     public Guid ClientId { get; set; }
     public Worker Worker { get; set; }  //Navigation to Worker
     public Guid WorkerId { get; set; }
+    public ProjectPortfolio Portfolio { get; set; }
+    public Guid PortfolioId { get; set; }
 }

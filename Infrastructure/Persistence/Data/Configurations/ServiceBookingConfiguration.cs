@@ -34,7 +34,12 @@ public class ServiceBookingConfiguration: IEntityTypeConfiguration<ServiceBookin
         builder.HasOne(sb => sb.Worker)
                .WithMany(w=>w.ServiceBookings) 
                .HasForeignKey(sb => sb.WorkerId)
-               .OnDelete(DeleteBehavior.Cascade); 
+               .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(sb => sb.Portfolio)
+               .WithMany(w => w.ServiceBookings)
+               .HasForeignKey(sb => sb.PortfolioId)
+               .OnDelete(DeleteBehavior.Cascade);
 
         // Table name 
         builder.ToTable("ServiceBookings");
