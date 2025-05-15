@@ -11,6 +11,8 @@ public class RatingReview
     public Guid WorkerId { get; set; } 
     public Client Client { get; set; } 
     public Guid ClientId { get; set; } 
+    public ProjectPortfolio ProjectPortfolio { get; set; }
+    public Guid ProjectPortfolioId { get; set; }
 
 }
 

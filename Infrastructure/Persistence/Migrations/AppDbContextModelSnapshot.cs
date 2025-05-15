@@ -78,61 +78,94 @@ namespace Persistence.Migrations
                     b.ToTable("DesignTemplates");
                 });
 
-            modelBuilder.Entity("Domain.Order", b =>
+            modelBuilder.Entity("Domain.Entities.OrderEntities.DeliveryMethod", b =>
                 {
-                    b.Property<Guid>("OrderId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("DeliveryTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<string>("ShortName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DeliveryMethods");
+                });
+
+            modelBuilder.Entity("Domain.Entities.OrderEntities.Order", b =>
+                {
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ClientId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("WorkerId")
+                    b.Property<Guid?>("DeliveryMethodId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("OrderId");
+                    b.Property<DateTimeOffset>("OrderDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("PaymentIntentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("SubTotal")
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<string>("UserEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("workerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("WorkerId");
+                    b.HasIndex("DeliveryMethodId");
+
+                    b.HasIndex("workerId");
 
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Domain.OrderItem", b =>
+            modelBuilder.Entity("Domain.Entities.OrderEntities.OrderItem", b =>
                 {
-                    b.Property<Guid>("orderItemId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OrderId")
+                    b.Property<Guid?>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("quantity")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("unitPrice")
+                    b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("orderItemId");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
                 });
@@ -198,6 +231,9 @@ namespace Persistence.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -234,6 +270,9 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("ProjectPortfolioId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
@@ -244,35 +283,11 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ClientId");
 
+                    b.HasIndex("ProjectPortfolioId");
+
                     b.HasIndex("WorkerId");
 
                     b.ToTable("RatingReviews");
-                });
-
-            modelBuilder.Entity("Domain.SelectedDesign", b =>
-                {
-                    b.Property<Guid>("SelectedDesignId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("DesignTemplateId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ProjectPortfolioId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("SelectedDesignId");
-
-                    b.HasIndex("DesignTemplateId");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ProjectPortfolioId");
-
-                    b.ToTable("SelectedDesigns");
                 });
 
             modelBuilder.Entity("Domain.ServiceBooking", b =>
@@ -282,6 +297,9 @@ namespace Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PortfolioId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -304,6 +322,8 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ClientId");
 
+                    b.HasIndex("PortfolioId");
+
                     b.HasIndex("WorkerId");
 
                     b.ToTable("ServiceBookings", (string)null);
@@ -314,6 +334,12 @@ namespace Persistence.Migrations
                     b.Property<Guid>("workerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Experience")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProfilePhotoUrl")
                         .HasMaxLength(250)
@@ -380,7 +406,7 @@ namespace Persistence.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("Domain.Order", b =>
+            modelBuilder.Entity("Domain.Entities.OrderEntities.Order", b =>
                 {
                     b.HasOne("Domain.Client", "Client")
                         .WithMany("Orders")
@@ -388,34 +414,88 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Worker", "Worker")
+                    b.HasOne("Domain.Entities.OrderEntities.DeliveryMethod", "DeliveryMethod")
                         .WithMany("Orders")
-                        .HasForeignKey("WorkerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DeliveryMethodId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Domain.Worker", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("workerId");
+
+                    b.OwnsOne("Domain.Entities.OrderEntities.Address", "ShippingAddress", b1 =>
+                        {
+                            b1.Property<Guid>("OrderId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Country")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("FirstName")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("LastName")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("OrderId");
+
+                            b1.ToTable("Orders");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId");
+                        });
 
                     b.Navigation("Client");
 
-                    b.Navigation("Worker");
+                    b.Navigation("DeliveryMethod");
+
+                    b.Navigation("ShippingAddress")
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.OrderItem", b =>
+            modelBuilder.Entity("Domain.Entities.OrderEntities.OrderItem", b =>
                 {
-                    b.HasOne("Domain.Order", "Order")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Domain.Entities.OrderEntities.Order", null)
+                        .WithMany("orderItems")
+                        .HasForeignKey("OrderId");
+
+                    b.OwnsOne("Domain.Entities.OrderEntities.ProductInOrderItem", "Product", b1 =>
+                        {
+                            b1.Property<Guid>("OrderItemId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("PictureUrl")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("ProductName")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("OrderItemId");
+
+                            b1.ToTable("OrderItems");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderItemId");
+                        });
+
+                    b.Navigation("Product")
                         .IsRequired();
-
-                    b.HasOne("Domain.Product", "Product")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Domain.ProjectImages", b =>
@@ -437,6 +517,12 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.ProjectPortfolio", "ProjectPortfolio")
+                        .WithMany("RatingReviews")
+                        .HasForeignKey("ProjectPortfolioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Worker", "Worker")
                         .WithMany("RatingReviews")
                         .HasForeignKey("WorkerId")
@@ -445,32 +531,9 @@ namespace Persistence.Migrations
 
                     b.Navigation("Client");
 
-                    b.Navigation("Worker");
-                });
-
-            modelBuilder.Entity("Domain.SelectedDesign", b =>
-                {
-                    b.HasOne("Domain.DesignTemplate", "DesignTemplate")
-                        .WithMany("SelectedDesigns")
-                        .HasForeignKey("DesignTemplateId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Domain.Order", "Order")
-                        .WithMany("SelectedDesigns")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.ProjectPortfolio", "ProjectPortfolio")
-                        .WithMany()
-                        .HasForeignKey("ProjectPortfolioId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("DesignTemplate");
-
-                    b.Navigation("Order");
-
                     b.Navigation("ProjectPortfolio");
+
+                    b.Navigation("Worker");
                 });
 
             modelBuilder.Entity("Domain.ServiceBooking", b =>
@@ -481,6 +544,12 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.ProjectPortfolio", "Portfolio")
+                        .WithMany("ServiceBookings")
+                        .HasForeignKey("PortfolioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Worker", "Worker")
                         .WithMany("ServiceBookings")
                         .HasForeignKey("WorkerId")
@@ -488,6 +557,8 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Client");
+
+                    b.Navigation("Portfolio");
 
                     b.Navigation("Worker");
                 });
@@ -501,26 +572,23 @@ namespace Persistence.Migrations
                     b.Navigation("ServiceBookings");
                 });
 
-            modelBuilder.Entity("Domain.DesignTemplate", b =>
+            modelBuilder.Entity("Domain.Entities.OrderEntities.DeliveryMethod", b =>
                 {
-                    b.Navigation("SelectedDesigns");
+                    b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Domain.Order", b =>
+            modelBuilder.Entity("Domain.Entities.OrderEntities.Order", b =>
                 {
-                    b.Navigation("OrderItems");
-
-                    b.Navigation("SelectedDesigns");
-                });
-
-            modelBuilder.Entity("Domain.Product", b =>
-                {
-                    b.Navigation("OrderItems");
+                    b.Navigation("orderItems");
                 });
 
             modelBuilder.Entity("Domain.ProjectPortfolio", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("RatingReviews");
+
+                    b.Navigation("ServiceBookings");
                 });
 
             modelBuilder.Entity("Domain.Worker", b =>

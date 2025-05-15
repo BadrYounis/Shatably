@@ -1,4 +1,6 @@
-﻿namespace Shared;
+﻿using Shared.Dtos;
+
+namespace Shared;
 public class WorkerDto
 {
     public Guid WorkerId { get; set; }
@@ -7,5 +9,10 @@ public class WorkerDto
     public string PhoneNumber { get; set; }
     public string Type { get; set; } //map enum to string
     public string? ProfilePhotoUrl { get; set; }
+    public int Experience { get; set; }
+    public string ExperienceDisplay => $"{Experience} Year{(Experience == 1 ? "" : "s")}";
+    public decimal Price { get; set; }
+    public ICollection<RatingReviewDto> RatingReview { get; set; }=new List<RatingReviewDto>();
+   
 }
 

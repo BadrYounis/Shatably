@@ -1,30 +1,22 @@
-﻿using Domain;
+﻿using Domain.Entities.OrderEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Persistence.Data;
-
-public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
+namespace Persistance.Data.Configurations
 {
-    public void Configure(EntityTypeBuilder<OrderItem> builder)
+    public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
     {
-        builder.HasKey(oi => oi.orderItemId);
+        public void Configure(EntityTypeBuilder<OrderItem> builder)
+        {
+            builder.Property(o => o.Price).HasColumnType("decimal(18,2)");
 
-        builder.Property(oi => oi.orderItemId)
-            .ValueGeneratedOnAdd();
-
-        builder.Property(oi => oi.quantity)
-               .IsRequired();
-
-        builder.Property(oi => oi.unitPrice)
-               .HasColumnType("decimal(18,2)");
-
-        builder.HasOne(oi => oi.Order)
-               .WithMany(o => o.OrderItems)
-               .HasForeignKey(oi => oi.OrderId);
-
-        builder.HasOne(oi => oi.Product)
-               .WithMany()
-               .HasForeignKey(oi => oi.ProductId);
+            // one : one mandatory from both
+            builder.OwnsOne(o => o.Product, p => p.WithOwner());
+        }
     }
 }

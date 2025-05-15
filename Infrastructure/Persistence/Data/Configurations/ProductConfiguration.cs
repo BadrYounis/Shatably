@@ -31,9 +31,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.isPackage)
             .IsRequired();
 
-        builder.HasMany(p => p.OrderItems)
-            .WithOne(oi => oi.Product)
-            .HasForeignKey(oi => oi.ProductId)
-            .OnDelete(DeleteBehavior.Cascade);
+        //builder.HasMany(p => p.OrderItems)
+        //    .WithOne(oi => oi.Product)
+        //    .HasForeignKey(oi => oi.ProductId)
+        //    .OnDelete(DeleteBehavior.Cascade);
     }
 }

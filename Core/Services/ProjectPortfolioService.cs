@@ -51,7 +51,8 @@ namespace Services
                 description = dto.Description,
                 MainImageUrl = dto.mainImageUrl,
                 Images = dto.ImageUrls?.Select(url => new ProjectImages { ImageUrl = url }).ToList()!,
-                createdDate = DateTime.UtcNow
+                createdDate = DateTime.UtcNow,
+                Price = dto.Price,
             };
 
             await _projectRepository.Value.AddAsync(project);
@@ -67,7 +68,7 @@ namespace Services
             project.Title = dto.Title;
             project.description = dto.Description;
             project.MainImageUrl = dto.ImageUrl;
-
+            project.Price = dto.Price;
             //Add New Photos
             project.Images.Clear(); // Clear Current Photos
             if (dto.ImageUrls != null)
@@ -96,6 +97,7 @@ namespace Services
                 ProjectId = project.projectId,
                 Title = project.Title,
                 Description = project.description,
+                Price=project.Price,
                 mainImageUrl = string.IsNullOrEmpty(project.MainImageUrl)
                 ? string.Empty
                 : $"{_imageBaseUrl}/{project.MainImageUrl}",
