@@ -18,6 +18,7 @@ namespace Services
         private readonly Lazy<IProjectPortfolioService> _projectPortfolioService;
         private readonly Lazy<IAuthService> _AuthService;
         private readonly Lazy<IDesignTemplateService> _DesignTemplateService;
+        private readonly Lazy<IOrderService> _orderService;
 
         private readonly Lazy<IClientService> _clientService;
 
@@ -37,6 +38,7 @@ namespace Services
             _clientService=new Lazy<IClientService> (() => new ClientService(unitOfWork));
 
             _workerService = new Lazy<IWorkerService>(() => new WorkerService(unitOfWork,configuration));
+            _orderService=new Lazy<IOrderService>(()=>new OrderService(unitOfWork,_basketRepository));
 
         }
         public IProductService ProductService => _productService.Value;
@@ -48,6 +50,7 @@ namespace Services
         public IClientService ClientService => _clientService.Value;
 
         public IWorkerService WorkerService => _workerService.Value;
+        public IOrderService OrderService => _orderService.Value;
 
     }
 }

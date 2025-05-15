@@ -9,4 +9,5 @@ public class Product
     public decimal price { get; set; }
     public int stockAmount { get; set; }
     public bool isPackage { get; set; }
+    public string imageUrl { get; set; }
 }

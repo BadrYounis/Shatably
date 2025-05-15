@@ -1,5 +1,4 @@
-﻿using ShippingAddress = Domain.Entities.OrderEntities.Address;
-
+﻿
 namespace Domain.Entities.OrderEntities
 {
     public class Order 
@@ -9,7 +8,7 @@ namespace Domain.Entities.OrderEntities
             
         }
         public Order(string userEmail,
-            ShippingAddress shippingAddress,
+            Address shippingAddress,
             ICollection<OrderItem> orderItems,
             DeliveryMethod deliveryMethod,
             decimal subTotal)
@@ -23,7 +22,7 @@ namespace Domain.Entities.OrderEntities
 
         public Guid Id { get; set; }
         public string UserEmail { get; set; }
-        public ShippingAddress ShippingAddress { get; set; }
+        public Address ShippingAddress { get; set; }
         //order ==> sandwich [orderItem1] - coffee[orderItem2] - chocolate[orderItem3] 
         public ICollection<OrderItem> orderItems { get; set; } = new List<OrderItem>();
         public OrderPaymentStatus PaymentStatus { get; set; } = OrderPaymentStatus.Pending;
