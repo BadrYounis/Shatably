@@ -6,5 +6,4 @@ public class DesignTemplate
     public string category { get; set; }
     public string imageUrl { get; set; }
     public string description { get; set; }
-    public ICollection<SelectedDesign> SelectedDesigns { get; set; } = new HashSet<SelectedDesign>();
 }

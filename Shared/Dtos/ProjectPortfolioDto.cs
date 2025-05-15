@@ -7,4 +7,5 @@ public class ProjectPortfolioDto
     public string mainImageUrl { get; set; }
     public HashSet<string>? ImageUrls { get; set; }
     public DateTime CreatedDate { get; set; }
+    public decimal  Price { get; set; }
 }

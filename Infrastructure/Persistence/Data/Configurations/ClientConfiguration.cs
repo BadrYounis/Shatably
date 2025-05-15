@@ -42,7 +42,7 @@ public class ClientProfileConfiguration : IEntityTypeConfiguration<Client>
         //       .IsRequired();
 
         builder.HasMany(c => c.Orders)
-               .WithOne(o => o.Client)
+               .WithOne(o=>o.Client)
                .HasForeignKey(o => o.ClientId);
 
         builder.HasMany(c => c.RatingReviews)

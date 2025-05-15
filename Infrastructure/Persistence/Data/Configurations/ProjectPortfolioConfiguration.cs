@@ -31,5 +31,13 @@ public class ProjectPortfolioConfiguration : IEntityTypeConfiguration<ProjectPor
             .WithOne(i => i.ProjectPortfolio)
             .HasForeignKey(i => i.ProjectId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property(p => p.Price)
+            .HasColumnType("decimal(18,2)");
+
+        builder.HasMany(w => w.RatingReviews)
+            .WithOne(rr => rr.ProjectPortfolio)
+            .HasForeignKey(rr => rr.ProjectPortfolioId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

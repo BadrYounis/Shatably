@@ -15,4 +15,9 @@ public class UpdateProjectPortfolioDto
     [Url(ErrorMessage = "Image URL must be a valid URL.")]
     public string ImageUrl { get; set; }
     public HashSet<string>? ImageUrls { get; set; }
+
+
+    [Required(ErrorMessage = "Price is required.")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
+    public decimal Price { get; set; }
 }

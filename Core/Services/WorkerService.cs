@@ -4,6 +4,7 @@ using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Services.Abstraction;
 using Shared;
+using Shared.Dtos;
 
 namespace Services;
 public class WorkerService : IWorkerService
@@ -52,7 +53,9 @@ public class WorkerService : IWorkerService
             email = dto.Email,
             phoneNumber = dto.PhoneNumber,
             Type = parsedType,
-            ProfilePhotoUrl = dto.ProfilePhotoUrl
+            ProfilePhotoUrl = dto.ProfilePhotoUrl,
+            Price = dto.Price,
+            Experience= dto.Experience,
         };
 
         await _workerRepository.Value.AddAsync(worker);
@@ -75,6 +78,8 @@ public class WorkerService : IWorkerService
         worker.phoneNumber = dto.PhoneNumber;
         worker.Type = parsedType;
         worker.ProfilePhotoUrl = dto.ProfilePhotoUrl;
+        worker.Price = dto.Price;
+        worker.Experience = dto.Experience;
     
         _workerRepository.Value.Update(worker);
         await _unitOfWork.SaveChangesAsync();
@@ -99,7 +104,17 @@ public class WorkerService : IWorkerService
             Type = worker.Type.ToString()!,
             ProfilePhotoUrl = string.IsNullOrEmpty(worker.ProfilePhotoUrl)
                 ? string.Empty
-                : $"{_imageBaseUrl}/{worker.ProfilePhotoUrl}"
+                : $"{_imageBaseUrl}/{worker.ProfilePhotoUrl}",
+            Price = worker.Price,
+            Experience = worker.Experience,
+            RatingReview = (worker.RatingReviews != null && worker.RatingReviews.Any())
+                         ? worker.RatingReviews.Select(r => new RatingReviewDto
+                         {
+                             Rating = r.Rating,
+                             Comment = r.Comment ?? string.Empty,
+                             CreatedAt = r.CreatedAt
+                         }).ToList()
+                         : new List<RatingReviewDto>()
         };
     }
 }
