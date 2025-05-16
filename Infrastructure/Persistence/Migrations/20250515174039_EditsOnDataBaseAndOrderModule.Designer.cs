@@ -12,8 +12,8 @@ using Persistence.Data;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250515172054_EditsOnDataBase+OrderModule")]
-    partial class EditsOnDataBaseOrderModule
+    [Migration("20250515174039_EditsOnDataBaseAndOrderModule")]
+    partial class EditsOnDataBaseAndOrderModule
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

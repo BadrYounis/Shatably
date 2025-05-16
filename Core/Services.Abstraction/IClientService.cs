@@ -10,6 +10,7 @@ namespace Services.Abstraction
 {
    public interface IClientService
     {
+        Task<IEnumerable<ClientResultDto>> GetAllAsync();
         Task<ClientResultDto> GetByIdAsync(Guid clientId);
         Task<Guid> CreateAsync(CreateClientDto dto);
         Task UpdateAsync(Guid clientId, UpdateClientDto dto);

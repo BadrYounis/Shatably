@@ -19,38 +19,40 @@ namespace Services
         private readonly Lazy<IAuthService> _AuthService;
         private readonly Lazy<IDesignTemplateService> _DesignTemplateService;
         private readonly Lazy<IOrderService> _orderService;
-
         private readonly Lazy<IClientService> _clientService;
-
         private readonly Lazy<IWorkerService> _workerService;
+        private readonly Lazy<IRatingReviewService> _ratingReviewService;
 
         public ServiceManager(IUnitOfWork unitOfWork, IBasketRepository _basketRepository, UserManager<User> _userManager,
             IOptions<JwtOptions> _options, AppDbContext _context, IEmailService _emailService
-            , IHttpContextAccessor _httpContextAccessor, LinkGenerator _linkGenerator,IConfiguration configuration)
+            , IHttpContextAccessor _httpContextAccessor, LinkGenerator _linkGenerator, IConfiguration configuration)
         {
             _productService = new Lazy<IProductService>(() => new ProductService(unitOfWork));
+
             _basketService = new Lazy<IBasketService>(() => new BasketService(_basketRepository));
-            _projectPortfolioService = new Lazy<IProjectPortfolioService>(() => new ProjectPortfolioService(unitOfWork,configuration));
+
+            _projectPortfolioService = new Lazy<IProjectPortfolioService>(() => new ProjectPortfolioService(unitOfWork, configuration));
 
             _AuthService = new Lazy<IAuthService>(() => new AuthService(_userManager, _options, _emailService, _httpContextAccessor));
 
-            _DesignTemplateService = new Lazy<IDesignTemplateService>(()=> new DesignTemplateService(unitOfWork,configuration));
-            _clientService=new Lazy<IClientService> (() => new ClientService(unitOfWork));
+            _DesignTemplateService = new Lazy<IDesignTemplateService>(() => new DesignTemplateService(unitOfWork, configuration));
 
-            _workerService = new Lazy<IWorkerService>(() => new WorkerService(unitOfWork,configuration));
-            _orderService=new Lazy<IOrderService>(()=>new OrderService(unitOfWork,_basketRepository));
+            _clientService = new Lazy<IClientService>(() => new ClientService(unitOfWork));
 
+            _workerService = new Lazy<IWorkerService>(() => new WorkerService(unitOfWork, configuration));
+
+            _orderService = new Lazy<IOrderService>(() => new OrderService(unitOfWork, _basketRepository));
+
+            _ratingReviewService = new Lazy<IRatingReviewService>(()=> new RatingReviewService(unitOfWork));
         }
         public IProductService ProductService => _productService.Value;
         public IBasketService BasketService => _basketService.Value;
         public IProjectPortfolioService ProjectPortfolioService => _projectPortfolioService.Value;
         public IAuthService AuthService => _AuthService.Value;
-        public IDesignTemplateService DesignTemplateService=>_DesignTemplateService.Value;
-
+        public IDesignTemplateService DesignTemplateService => _DesignTemplateService.Value;
         public IClientService ClientService => _clientService.Value;
-
         public IWorkerService WorkerService => _workerService.Value;
         public IOrderService OrderService => _orderService.Value;
-
+        public IRatingReviewService RatingReviewService => _ratingReviewService.Value;
     }
 }
