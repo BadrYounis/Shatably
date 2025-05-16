@@ -18,4 +18,7 @@ public class UpdateProductDto
     [Required(ErrorMessage = "Stock amount is required.")]
     [Range(0, int.MaxValue, ErrorMessage = "Stock amount cannot be negative.")]
     public int StockAmount { get; set; }
+    public string imageUrl { get; set; }
+    public bool isPackage { get; set; }
+
 }

@@ -22,7 +22,7 @@ namespace Services.Specifications
            (string.IsNullOrWhiteSpace(parameters.Search) || project.Title.ToLower().Contains(parameters.Search.ToLower().Trim()))
            )
         {
-            AddInclude(p => p.Title);
+            //AddInclude(p => p.Title);
 
             if (parameters.Sort is not null)
             {

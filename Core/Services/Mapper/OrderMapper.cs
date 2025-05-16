@@ -40,7 +40,8 @@ namespace Services.Mapper
                 Id=method.Id,
                 ShortName = method.ShortName,
                 Description = method.Description,
-                Price = method.Price
+                Price = method.Price,
+                DeliveryTime = method.DeliveryTime,               
             };
         }
 
@@ -50,7 +51,7 @@ namespace Services.Mapper
             {
                 ProductId = item.Product.ProductId,
                 ProductName = item.Product.ProductName,
-                PictureUrl = item.Product.PictureUrl,
+                ImageUrl = item.Product.ImageUrl,
                 Quantity = item.Quantity,
                 Price = item.Price
             };

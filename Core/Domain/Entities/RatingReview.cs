@@ -7,12 +7,12 @@ public class RatingReview
     public DateTime CreatedAt { get; set; }   // When the review was written
     
     // Navigation Properties
-    public Worker Worker { get; set; } 
-    public Guid WorkerId { get; set; } 
     public Client Client { get; set; } 
     public Guid ClientId { get; set; } 
-    public ProjectPortfolio ProjectPortfolio { get; set; }
-    public Guid ProjectPortfolioId { get; set; }
+    public Worker? Worker { get; set; } 
+    public Guid? WorkerId { get; set; } 
+    public ProjectPortfolio? ProjectPortfolio { get; set; }
+    public Guid? ProjectPortfolioId { get; set; }
 
 }
 

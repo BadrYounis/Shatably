@@ -12,7 +12,7 @@ namespace Shared.OrderModels
         // we need dto to be flat [ not complex ]
         public Guid ProductId { get; init; }
         public string ProductName { get; init; }
-        public string PictureUrl { get; init; } 
+        public string ImageUrl { get; init; } 
 
         #endregion
         public int Quantity { get; init; }

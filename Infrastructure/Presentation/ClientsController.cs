@@ -1,19 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Abstraction;
-using Shared;
 using Shared.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ClientController(IServiceManager _serviceManager) : ControllerBase
+    public class ClientsController(IServiceManager _serviceManager) : ControllerBase
     {
+        // GET: api/Clients
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var clients = await _serviceManager.ClientService.GetAllAsync();
+            return Ok(clients);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ClientResultDto>> GetById(Guid id)
         {

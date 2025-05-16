@@ -9,7 +9,7 @@ namespace Services.Specifications
         public ProductWithCategorySpecifications(Guid id)
             :base(product=>product.productId==id)
         {
-            AddInclude(p => p.category);
+            //AddInclude(p => p.category);
         }
         public ProductWithCategorySpecifications(ProductSpecificationsParameters parameters)
             :base(product=>
@@ -18,7 +18,7 @@ namespace Services.Specifications
             (string.IsNullOrWhiteSpace(parameters.Search) || product.name.ToLower().Contains(parameters.Search.ToLower().Trim()))
             )
         {
-            AddInclude(p => p.category);
+            //AddInclude(p => p.category);
             if (parameters.Sort is not null)
             {
                 // Sorting

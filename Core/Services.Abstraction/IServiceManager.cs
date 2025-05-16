@@ -7,11 +7,9 @@
         public IProjectPortfolioService ProjectPortfolioService { get; }
         public IAuthService AuthService { get; }
         public IDesignTemplateService DesignTemplateService { get; }
-
         public IClientService ClientService { get; }
-
         public IWorkerService WorkerService { get; }
         public IOrderService OrderService { get; }
-
+        public IRatingReviewService RatingReviewService { get; }
     }
 }

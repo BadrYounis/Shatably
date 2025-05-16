@@ -23,7 +23,7 @@ namespace Services
         {
               var products = await _productRepository.Value.GetAllAsync(new ProductWithCategorySpecifications(parameters));
            // var products = await _unitOfWork.GetRepository<Product, int>().GetAllAsync(new ProductWithCategorySpecifications(parameters));
-            var totalCount = await _unitOfWork.GetRepository<Product, int>().CountAsync(new ProductCountSpecifications(parameters));
+            var totalCount = await _unitOfWork.GetRepository<Product, Guid>().CountAsync(new ProductCountSpecifications(parameters));
             var productResult = products.Select(MapToDto);
             var result = new PaginatedResult<ProductDto>(
                 productResult.Count(),
@@ -36,10 +36,6 @@ namespace Services
         public async Task<ProductDto> GetByIdAsync(Guid productId)
         {
             var product = await _productRepository.Value.GetByIdAsync(new ProductWithCategorySpecifications(productId));
-            // var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(new ProductWithCategorySpecifications(productId));
-            //if (product is null)
-            //    throw new NotFoundException("Product not found.");
-            //return MapToDto(product);
             return product is null ? throw new ProductNotFoundException(productId) : MapToDto(product);
 
         }
@@ -56,7 +52,9 @@ namespace Services
                 name = dto.Name,
                 category = dto.Category,
                 price = dto.Price,
-                stockAmount = dto.StockAmount
+                stockAmount = dto.StockAmount,
+                imageUrl = dto.imageUrl,     
+                isPackage = dto.isPackage
             };
             await _productRepository.Value.AddAsync(product);
             await _unitOfWork.SaveChangesAsync();
@@ -71,6 +69,8 @@ namespace Services
             product.category = dto.Category;
             product.price = dto.Price;
             product.stockAmount = dto.StockAmount;
+            product.imageUrl = dto.imageUrl;
+            product.isPackage = dto.isPackage;
             _productRepository.Value.Update(product);
             await _unitOfWork.SaveChangesAsync();
         }
@@ -90,7 +90,8 @@ namespace Services
             Category = product.category,
             Price = product.price,
             StockAmount = product.stockAmount,
-            
+            imageUrl = product.imageUrl,       
+            isPackage = product.isPackage
         };
 
     }

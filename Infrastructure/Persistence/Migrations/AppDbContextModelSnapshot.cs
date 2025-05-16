@@ -45,7 +45,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("ClientId");
 
-                    b.ToTable("Clients", (string)null);
+                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("Domain.DesignTemplate", b =>
@@ -75,7 +75,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("templateId");
 
-                    b.ToTable("DesignTemplates", (string)null);
+                    b.ToTable("DesignTemplates");
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderEntities.DeliveryMethod", b =>
@@ -101,7 +101,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeliveryMethods", (string)null);
+                    b.ToTable("DeliveryMethods");
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderEntities.Order", b =>
@@ -145,7 +145,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("workerId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderEntities.OrderItem", b =>
@@ -167,7 +167,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Domain.Product", b =>
@@ -180,6 +180,10 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("imageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isPackage")
                         .HasColumnType("bit");
@@ -197,7 +201,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("productId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Domain.ProjectImages", b =>
@@ -217,7 +221,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectImages", (string)null);
+                    b.ToTable("ProjectImages");
                 });
 
             modelBuilder.Entity("Domain.ProjectPortfolio", b =>
@@ -251,7 +255,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("projectId");
 
-                    b.ToTable("ProjectPortfolios", (string)null);
+                    b.ToTable("ProjectPortfolios");
                 });
 
             modelBuilder.Entity("Domain.RatingReview", b =>
@@ -270,13 +274,13 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ProjectPortfolioId")
+                    b.Property<Guid?>("ProjectPortfolioId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("WorkerId")
+                    b.Property<Guid?>("WorkerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ReviewId");
@@ -287,7 +291,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("WorkerId");
 
-                    b.ToTable("RatingReviews", (string)null);
+                    b.ToTable("RatingReviews");
                 });
 
             modelBuilder.Entity("Domain.ServiceBooking", b =>
@@ -367,12 +371,12 @@ namespace Persistence.Migrations
 
                     b.HasKey("workerId");
 
-                    b.ToTable("Workers", (string)null);
+                    b.ToTable("Workers");
                 });
 
             modelBuilder.Entity("Domain.Client", b =>
                 {
-                    b.OwnsOne("Domain.Client.Address#Domain.Address", "Address", b1 =>
+                    b.OwnsOne("Domain.Address", "Address", b1 =>
                         {
                             b1.Property<Guid>("ClientId")
                                 .HasColumnType("uniqueidentifier");
@@ -397,7 +401,7 @@ namespace Persistence.Migrations
 
                             b1.HasKey("ClientId");
 
-                            b1.ToTable("Clients", (string)null);
+                            b1.ToTable("Clients");
 
                             b1.WithOwner()
                                 .HasForeignKey("ClientId");
@@ -423,34 +427,26 @@ namespace Persistence.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("workerId");
 
-                    b.OwnsOne("Domain.Entities.OrderEntities.Order.ShippingAddress#Domain.Entities.OrderEntities.Address", "ShippingAddress", b1 =>
+                    b.OwnsOne("Domain.Address", "ShippingAddress", b1 =>
                         {
                             b1.Property<Guid>("OrderId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("City")
+                            b1.Property<string>("city")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("Country")
+                            b1.Property<string>("region")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("FirstName")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("LastName")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Street")
+                            b1.Property<string>("street")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("OrderId");
 
-                            b1.ToTable("Orders", (string)null);
+                            b1.ToTable("Orders");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");
@@ -470,12 +466,12 @@ namespace Persistence.Migrations
                         .WithMany("orderItems")
                         .HasForeignKey("OrderId");
 
-                    b.OwnsOne("Domain.Entities.OrderEntities.OrderItem.Product#Domain.Entities.OrderEntities.ProductInOrderItem", "Product", b1 =>
+                    b.OwnsOne("Domain.Entities.OrderEntities.ProductInOrderItem", "Product", b1 =>
                         {
                             b1.Property<Guid>("OrderItemId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("PictureUrl")
+                            b1.Property<string>("ImageUrl")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
@@ -488,7 +484,7 @@ namespace Persistence.Migrations
 
                             b1.HasKey("OrderItemId");
 
-                            b1.ToTable("OrderItems", (string)null);
+                            b1.ToTable("OrderItems");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderItemId");
@@ -520,14 +516,12 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.ProjectPortfolio", "ProjectPortfolio")
                         .WithMany("RatingReviews")
                         .HasForeignKey("ProjectPortfolioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Domain.Worker", "Worker")
                         .WithMany("RatingReviews")
                         .HasForeignKey("WorkerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Client");
 

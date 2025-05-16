@@ -1,14 +1,9 @@
-﻿using Domain.Contracts;
-using Domain;
-using Services.Abstraction;
-using Shared.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Shared;
+﻿using Domain;
+using Domain.Contracts;
 using Domain.Exceptions;
+using Services.Abstraction;
+using Shared;
+using Shared.Dtos;
 
 namespace Services
 {
@@ -22,18 +17,21 @@ namespace Services
             _clientRepository = new Lazy<IGenericRepository<Client, Guid>>(
                 () => _unitOfWork.GetRepository<Client, Guid>());
         }
-
+        public async Task<IEnumerable<ClientResultDto>> GetAllAsync()
+        {
+            var clients = await _clientRepository.Value.GetAllAsync();
+            return clients.Select(MapToDto);
+        }
         public async Task<ClientResultDto> GetByIdAsync(Guid clientId)
         {
-            var client =await _clientRepository.Value.GetByIdAsync(clientId);
+            var client = await _clientRepository.Value.GetByIdAsync(clientId);
             return client is null ? throw new ClientNotFoundException(clientId) : MapToDto(client);
         }
-
         public async Task<Guid> CreateAsync(CreateClientDto dto)
         {
             var client = new Client
             {
-                ClientId=Guid.NewGuid(),
+                ClientId = Guid.NewGuid(),
                 fullName = dto.FullName,
                 email = dto.Email,
                 phoneNumber = dto.PhoneNumber,
@@ -48,17 +46,6 @@ namespace Services
             await _unitOfWork.SaveChangesAsync();
             return client.ClientId;
         }
-
-        public async Task DeleteAsync(Guid clientId)
-        {
-            var client=await _clientRepository.Value.GetByIdAsync(clientId);
-            if (client is null) 
-                throw new ClientNotFoundException(clientId);
-            
-            _clientRepository.Value.Delete(client);
-            await _unitOfWork.SaveChangesAsync();
-        }
-
         public async Task UpdateAsync(Guid clientId, UpdateClientDto dto)
         {
             var client = await _clientRepository.Value.GetByIdAsync(clientId);
@@ -74,19 +61,27 @@ namespace Services
                 street = dto.Address.street
             };
         }
+        public async Task DeleteAsync(Guid clientId)
+        {
+            var client = await _clientRepository.Value.GetByIdAsync(clientId);
+            if (client is null)
+                throw new ClientNotFoundException(clientId);
 
+            _clientRepository.Value.Delete(client);
+            await _unitOfWork.SaveChangesAsync();
+        }
         private static ClientResultDto MapToDto(Client client) => new ClientResultDto
         {
-            ClientId=client.ClientId,
-            fullName=client.fullName,
-            phoneNumber=client.phoneNumber,
-            email=client.email,
-            Address= client.Address is null ? throw new NotFoundException("Address is required!") : new AddressDto
+            ClientId = client.ClientId,
+            fullName = client.fullName,
+            phoneNumber = client.phoneNumber,
+            email = client.email,
+            Address = client.Address is null ? throw new NotFoundException("Address is required!") : new AddressDto
             {
                 city = client.Address.city,
                 region = client.Address.region,
                 street = client.Address.street,
-            },            
+            },
         };
     }
 }
