@@ -33,7 +33,7 @@ namespace Services
 
             _projectPortfolioService = new Lazy<IProjectPortfolioService>(() => new ProjectPortfolioService(unitOfWork, configuration));
 
-            _AuthService = new Lazy<IAuthService>(() => new AuthService(_userManager, _options, _emailService, _httpContextAccessor));
+            _AuthService = new Lazy<IAuthService>(() => new AuthService(_userManager, _options, _emailService, _httpContextAccessor, unitOfWork));
 
             _DesignTemplateService = new Lazy<IDesignTemplateService>(() => new DesignTemplateService(unitOfWork, configuration));
 

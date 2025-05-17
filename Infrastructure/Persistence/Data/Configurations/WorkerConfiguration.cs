@@ -26,7 +26,7 @@ public class WorkerConfiguration : IEntityTypeConfiguration<Worker>
             .HasMaxLength(20);
 
         builder.Property(w => w.Type)
-            .IsRequired()
+            .IsRequired(false)
             .HasConversion<string>() // Store enum as string
             .HasMaxLength(50);
 

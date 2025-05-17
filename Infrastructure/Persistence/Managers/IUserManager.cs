@@ -6,6 +6,8 @@ namespace Persistence.Managers
     {
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<User?> GetUserByIdAsync(Guid id);
+        Task<User?> FindByIdAsync(string id);
+        Task<IList<string>> GetUserRolesAsync(User user);
         Task<User> AddUserAsync(User user, string password);
         Task<bool> UpdateUserAsync(User user);
         Task<bool> DeleteUserAsync(Guid id);

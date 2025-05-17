@@ -13,6 +13,24 @@ namespace Persistence.Identity
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<User>(entity =>
+            {
+                entity.OwnsOne(c => c.Address, address =>
+                {
+                    address.Property(a => a.city)
+                           .HasColumnName("City")
+                           .HasMaxLength(50);
+
+                    address.Property(a => a.region)
+                           .HasColumnName("Region")
+                           .HasMaxLength(50);
+
+                    address.Property(a => a.street)
+                           .HasColumnName("Street")
+                           .HasMaxLength(100);
+                });
+            });
         }
     }
 }

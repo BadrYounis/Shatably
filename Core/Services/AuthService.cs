@@ -1,9 +1,10 @@
-﻿using Domain.Entities;
+﻿using Domain;
+using Domain.Contracts;
+using Domain.Entities;
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.Abstraction;
@@ -17,17 +18,17 @@ using System.Web;
 namespace Services
 {
     public class AuthService(UserManager<User> _userManager, IOptions<JwtOptions> _options, IEmailService _emailService
-        , IHttpContextAccessor _httpContextAccessor): IAuthService
+        , IHttpContextAccessor _httpContextAccessor, IUnitOfWork _unitOfWork) : IAuthService
     {
         public async Task<UserLoginDto> Login(LoginDto loginDto)
         {
             var _jwtOptions = _options.Value;
-            //check if email already exists to an account or not
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (user is null) throw new UnAuthorizedException();
-            //check password is correct or not 
+
             var checkPass = await _userManager.CheckPasswordAsync(user, loginDto.Password);
             if (!checkPass) throw new UnAuthorizedException();
+
             return new UserLoginDto
             {
                 Token = await CreateTokenAsync(user),
@@ -37,13 +38,8 @@ namespace Services
         }
         public async Task<UserResultDto> Register(RegisterDto registerDto)
         {
-            // Auto-generate a username if not provided
             var baseUserName = registerDto.UserName ?? registerDto.Email.Split('@')[0];
-
-            // Remove non-letter/digit characters
             baseUserName = Regex.Replace(baseUserName, "[^a-zA-Z0-9]", "");
-
-            // Ensure it's unique
             var uniqueUserName = baseUserName;
             int suffix = 1;
 
@@ -58,27 +54,76 @@ namespace Services
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
                 Email = registerDto.Email,
-                PhoneNumber = registerDto.PhoneNumber,
+                PhoneNumber = registerDto.PhoneNumber,             
             };
-            var createUser = await _userManager.CreateAsync(user, registerDto.Password);
-            // handle if create user process is successed or not
-            if (!createUser.Succeeded)
+
+            try
             {
-                var errors = createUser.Errors.Select(e => e.Description).ToList();
-                throw new ValidationException(errors);
+                var createUser = await _userManager.CreateAsync(user, registerDto.Password);
+                // handle if create user process is successed or not
+                if (!createUser.Succeeded)
+                {
+                    var errors = createUser.Errors.Select(e => e.Description).ToList();
+                    throw new ValidationException(errors);
+                }
+
+                if (!await _userManager.IsInRoleAsync(user, registerDto.Role))
+                {
+                    await _userManager.AddToRoleAsync(user, registerDto.Role);
+                }
+                // ربط Identity User مع الـ Business Entities
+                if (registerDto.Role.ToLower() == "client")
+                {
+                    var client = new Client
+                    {
+                        ClientId = Guid.NewGuid(),
+                        fullName = $"{registerDto.FirstName} {registerDto.LastName}",
+                        email = registerDto.Email,
+                        phoneNumber = registerDto.PhoneNumber ?? "",
+                        UserId = user.Id
+                    };
+
+                    await _unitOfWork.GetRepository<Client, Guid>().AddAsync(client);
+                }
+                else if (registerDto.Role.ToLower() == "worker")
+                {
+                    var worker = new Worker
+                    {
+                        workerId = Guid.NewGuid(),
+                        fullName = $"{registerDto.FirstName} {registerDto.LastName}",
+                        email = registerDto.Email,
+                        phoneNumber = registerDto.PhoneNumber ?? "",
+                        UserId = user.Id,
+                        Experience = 0,
+                        Price = 0,
+                        // Type = Domain.Type.Electrician
+                        // Type = default أو ممكن تضيفه في الـ DTO وتجيبه من هناك
+                    };
+
+                    await _unitOfWork.GetRepository<Worker, Guid>().AddAsync(worker);
+                }
+                await _unitOfWork.SaveChangesAsync();
+
+                var roles = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "NoRole";
+                return new UserResultDto(user.UserName, await CreateTokenAsync(user), user.Email, roles);
             }
-            return new UserResultDto(user.UserName, await CreateTokenAsync(user), user.Email);
+            catch (Exception)
+            {
+                // لو حدث خطأ في إضافة العميل/العامل أو الحفظ، نحذف المستخدم في السيكيورتي لمنع التناقض
+                await _userManager.DeleteAsync(user);
+                throw;
+            }
         }
         public async Task<bool> ForgotPasswordAsync(ForgotPasswordDTO dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user is null)
-                return false;
+                return true;                  // الأفضل إرجاع true دائما لتجنب الكشف عن وجود البريد
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             var request = _httpContextAccessor.HttpContext!.Request;
-            var resetUrl = $"http://localhost:7242/ResetPassword.html?email={Uri.EscapeDataString(user.Email!)}&token={Uri.EscapeDataString(token)}";
+            var resetUrl = $"https://localhost:7242/ResetPassword.html?email={Uri.EscapeDataString(user.Email!)}&token={Uri.EscapeDataString(token)}";
 
             var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "Emails", "PasswordResetTemplate.html");
             var htmlTemplate = await System.IO.File.ReadAllTextAsync(templatePath);
@@ -144,6 +189,6 @@ namespace Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        
+
     }
 }

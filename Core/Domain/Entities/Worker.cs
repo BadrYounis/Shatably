@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Domain.Entities.OrderEntities;
+﻿using Domain.Entities.OrderEntities;
 
 namespace Domain;
 public class Worker
@@ -12,6 +11,7 @@ public class Worker
     public string? ProfilePhotoUrl { get; set; }
     public int Experience { get; set; }
     public decimal Price { get; set; }
+    public Guid UserId { get; set; } // الربط مع Security DB
     public ICollection<ServiceBooking> ServiceBookings { get; set; } = new HashSet<ServiceBooking>();
     public ICollection<Order> Orders { get; set; } = new HashSet<Order>();
     public ICollection<RatingReview> RatingReviews { get; set; } = new HashSet<RatingReview>();
