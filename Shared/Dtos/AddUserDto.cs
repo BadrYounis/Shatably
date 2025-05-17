@@ -1,4 +1,6 @@
-﻿namespace Shared;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Shared;
 public class AddUserDto
 {
     public string UserName { get; set; }
@@ -6,4 +8,5 @@ public class AddUserDto
     public string Password { get; set; } // For Identity
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public AddressDto? Address { get; set; }
 }

@@ -7,6 +7,7 @@ public class Client
     public string fullName { get; set; }
     public string email { get; set; }
     public string phoneNumber { get; set; }
+    public Guid UserId { get; set; } // الربط مع Security DB
     public Address? Address { get; set; }
     public ICollection<Order> Orders { get; set; } = new HashSet<Order>();
     public ICollection<RatingReview> RatingReviews { get; set; } = new HashSet<RatingReview>();

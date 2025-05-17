@@ -12,7 +12,7 @@ using Persistence.Identity;
 namespace Persistence.Identity.Migrations
 {
     [DbContext(typeof(IdentityAppDbContext))]
-    [Migration("20250511013726_IdentityInitialCreate")]
+    [Migration("20250517204944_IdentityInitialCreate")]
     partial class IdentityInitialCreate
     {
         /// <inheritdoc />

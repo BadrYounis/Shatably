@@ -13,6 +13,9 @@ namespace Presentation
         [HttpPost("login")]
         public async Task<ActionResult<UserResultDto>> Login(LoginDto loginDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var login = await _serviceManager.AuthService.Login(loginDto);
             return Ok(login);
         }
@@ -21,6 +24,9 @@ namespace Presentation
         [HttpPost("register")]
         public async Task<ActionResult<UserResultDto>> Register(RegisterDto registerDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var register = await _serviceManager.AuthService.Register(registerDto);
             return Ok(register);
         }
@@ -29,6 +35,9 @@ namespace Presentation
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = await _serviceManager.AuthService.ForgotPasswordAsync(dto);
             if (!result)
                 return BadRequest("No user associated with this email.");
@@ -40,6 +49,9 @@ namespace Presentation
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO dto)
         {
+                if (!ModelState.IsValid)
+        return BadRequest(ModelState);
+
             var result = await _serviceManager.AuthService.ResetPasswordAsync(dto);
 
             if (!result.Succeeded)

@@ -8,5 +8,7 @@ public class UserDto
     public string LastName { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
+    public AddressDto? Address { get; set; }  
+
 }
 

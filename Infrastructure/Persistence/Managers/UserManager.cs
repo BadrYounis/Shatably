@@ -8,9 +8,12 @@ namespace Persistence.Managers
     {
         public async Task<IEnumerable<User>> GetAllUsersAsync()
             => await _userManager.Users.ToListAsync();
-
         public async Task<User?> GetUserByIdAsync(Guid id)
             => await _userManager.FindByIdAsync(id.ToString());
+        public async Task<User?> FindByIdAsync(string id)
+        => await _userManager.FindByIdAsync(id);
+        public async Task<IList<string>> GetUserRolesAsync(User user)
+            => await _userManager.GetRolesAsync(user);    
         public async Task<User> AddUserAsync(User user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);
@@ -30,7 +33,6 @@ namespace Persistence.Managers
 
             var result = await _userManager.DeleteAsync(user);
             return result.Succeeded;
-        }
-
+        }   
     }
 }

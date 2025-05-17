@@ -76,7 +76,7 @@ namespace Services
             fullName = client.fullName,
             phoneNumber = client.phoneNumber,
             email = client.email,
-            Address = client.Address is null ? throw new NotFoundException("Address is required!") : new AddressDto
+            Address = client.Address is null ? null : new AddressDto
             {
                 city = client.Address.city,
                 region = client.Address.region,

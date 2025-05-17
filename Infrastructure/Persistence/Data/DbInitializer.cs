@@ -28,17 +28,17 @@ namespace Persistence.Data
             {
                 // Admin, SuperAdmin
                 await _roleManager.CreateAsync(new IdentityRole<Guid>("Worker"));
-                await _roleManager.CreateAsync(new IdentityRole<Guid>("User"));
+                await _roleManager.CreateAsync(new IdentityRole<Guid>("Client"));
             }
             // Seed Users
             if (!_userManager.Users.Any())
             {
                 var Worker = new User()
                 {
-                    FirstName = "Ahmed",
-                    LastName = "Mohamed",
-                    UserName = "AhmedMohamed",
-                    Email = "Ahmed@gmail.com",
+                    FirstName = "Yamen",
+                    LastName = "Karim",
+                    UserName = "YamenKarim",
+                    Email = "Yamen@gmail.com",
                     PhoneNumber = "01017151157"
                 };
                 var User = new User()
@@ -46,14 +46,14 @@ namespace Persistence.Data
                     FirstName = "Badr",
                     LastName = "Younis",
                     UserName = "BadrYounis",
-                    Email = "Badr@gmail.com",
+                    Email = "badryounis14@gmail.com",
                     PhoneNumber = "01017151157"
                 };
                 await _userManager.CreateAsync(User, "P@ssw0rd");
                 await _userManager.CreateAsync(Worker, "Passw0rd@");
                 // Assign Each Role For User
                 await _userManager.AddToRoleAsync(Worker, "Worker");
-                await _userManager.AddToRoleAsync(User, "User");
+                await _userManager.AddToRoleAsync(User, "Client");
             }
         }
 
