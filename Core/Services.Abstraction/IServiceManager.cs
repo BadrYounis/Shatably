@@ -11,5 +11,7 @@
         public IWorkerService WorkerService { get; }
         public IOrderService OrderService { get; }
         public IRatingReviewService RatingReviewService { get; }
+        public IPaymentService PaymentService { get; }
+
     }
 }

@@ -11,13 +11,15 @@ namespace Domain.Entities.OrderEntities
             Address shippingAddress,
             ICollection<OrderItem> orderItems,
             DeliveryMethod deliveryMethod,
-            decimal subTotal)
+            decimal subTotal,
+            string paymentIntentId)
         {
             UserEmail = userEmail;
             ShippingAddress = shippingAddress;
             this.orderItems = orderItems;
             DeliveryMethod = deliveryMethod;
             SubTotal = subTotal;
+            PaymentIntentId = paymentIntentId;
         }
 
         public Guid Id { get; set; }
@@ -30,7 +32,7 @@ namespace Domain.Entities.OrderEntities
         public Guid? DeliveryMethodId { get; set; }
         public decimal SubTotal { get; set; } // orderItem.Price * orderItem.Quantity // Total ==> SubTotal + ShippingPrice
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
-        public string PaymentIntentId { get; set; } = string.Empty;
+        public string PaymentIntentId { get; set; } 
 
         public Client Client { get; set; }
         public Guid ClientId { get; set; }

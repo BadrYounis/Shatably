@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Persistence.Data;
 using Services.Abstraction;
 using Shared;
+using static StackExchange.Redis.Role;
 
 namespace Services
 {
@@ -22,6 +23,8 @@ namespace Services
         private readonly Lazy<IClientService> _clientService;
         private readonly Lazy<IWorkerService> _workerService;
         private readonly Lazy<IRatingReviewService> _ratingReviewService;
+        private readonly Lazy<IPaymentService> _paymentService;
+
 
         public ServiceManager(IUnitOfWork unitOfWork, IBasketRepository _basketRepository, UserManager<User> _userManager,
             IOptions<JwtOptions> _options, AppDbContext _context, IEmailService _emailService
@@ -44,6 +47,8 @@ namespace Services
             _orderService = new Lazy<IOrderService>(() => new OrderService(unitOfWork, _basketRepository));
 
             _ratingReviewService = new Lazy<IRatingReviewService>(()=> new RatingReviewService(unitOfWork));
+            _paymentService = new Lazy<IPaymentService>(() => new PaymentService( unitOfWork, configuration, _basketRepository));
+
         }
         public IProductService ProductService => _productService.Value;
         public IBasketService BasketService => _basketService.Value;
@@ -54,5 +59,7 @@ namespace Services
         public IWorkerService WorkerService => _workerService.Value;
         public IOrderService OrderService => _orderService.Value;
         public IRatingReviewService RatingReviewService => _ratingReviewService.Value;
+        public IPaymentService PaymentService => _paymentService.Value;
+
     }
 }
