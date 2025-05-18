@@ -3,6 +3,7 @@ using Domain.Contracts;
 using Domain.Entities;
 using Domain.Entities.OrderEntities;
 using Domain.Exceptions;
+using Persistence.Repositories;
 using Services.Abstraction;
 using Services.Mapper;
 using Services.Specification;
@@ -44,13 +45,20 @@ namespace Services
                 ?? throw new DeliveryMethodNotFoundException(request.DeliveryMethodId);
 
             // SubTotal
-            var subTotal=orderItems.Sum(item=>item.Price*item.Quantity);
-
+            var orderRepo = _unitOfWork.GetRepository<Order, Guid>();
+            var existingOrder = await orderRepo.GetByIdAsync(new OrderWithPaymentIntentIdSpecifications(basket.PaymentIntentId));
+            if (existingOrder != null)
+            {
+                orderRepo.Delete(existingOrder);
+            }
+            var subTotal = orderItems.Sum(item => item.Price * item.Quantity);
+           
             // create order
-            var order=new Order(userEmail, shippingAddress, orderItems,deliveryMethod,subTotal);
-            
+            var order=new Order(userEmail, shippingAddress, orderItems,deliveryMethod,subTotal,basket.PaymentIntentId);
+
             // save db
-            await _unitOfWork.GetRepository<Order,Guid>().AddAsync(order);
+            await orderRepo.AddAsync(order);
+            await _unitOfWork.SaveChangesAsync();
 
             // map , return
             return OrderMapper.MapToOrderResult(order);

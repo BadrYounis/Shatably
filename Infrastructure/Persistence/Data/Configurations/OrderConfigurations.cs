@@ -14,8 +14,8 @@ namespace Persistance.Data.Configurations
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.OwnsOne(o => o.ShippingAddress, s => s.WithOwner());
-           
-            builder.HasMany(o => o.orderItems).WithOne();
+
+            builder.HasMany(o => o.orderItems).WithOne().OnDelete(DeleteBehavior.Cascade);
 
             // علشان لو غيرت في السترينج اللي مكتوب في ال enum [يعني كتبت paymentsucceed بدل paymnetreceived]
             builder.Property(o => o.PaymentStatus).HasConversion(paymentstauts => paymentstauts.ToString(),  //  --> means paymentStatus will be stored as string in database

@@ -3,6 +3,12 @@ public class Basket
 {
     public string Username { get; set; } // Acts as the Redis key
     public IEnumerable<BasketItem> Items { get; set; } = new HashSet<BasketItem>();
+
+    // Payment Module
+    public string? PaymentIntentId { get; set; }
+    public string? ClientSecret { get; set; }
+    public decimal? ShippingPrice { get; set; }
+    public Guid? DeliveryMethodId { get; set; }
 }
 public class BasketItem
 {
