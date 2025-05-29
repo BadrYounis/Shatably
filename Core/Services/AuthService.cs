@@ -3,6 +3,7 @@ using Domain.Contracts;
 using Domain.Entities;
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -18,8 +19,9 @@ using System.Web;
 namespace Services
 {
     public class AuthService(UserManager<User> _userManager, IOptions<JwtOptions> _options, IEmailService _emailService
-        , IHttpContextAccessor _httpContextAccessor, IUnitOfWork _unitOfWork) : IAuthService
+        , IHttpContextAccessor _httpContextAccessor, IUnitOfWork _unitOfWork, IWebHostEnvironment _env) : IAuthService
     {
+
         public async Task<UserLoginDto> Login(LoginDto loginDto)
         {
             var _jwtOptions = _options.Value;
@@ -105,7 +107,7 @@ namespace Services
                 await _unitOfWork.SaveChangesAsync();
 
                 var roles = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "NoRole";
-                return new UserResultDto(user.UserName, await CreateTokenAsync(user), user.Email, roles);
+                return new UserResultDto(user.UserName, /*await CreateTokenAsync(user)*/ user.Email, roles);
             }
             catch (Exception)
             {
@@ -125,7 +127,7 @@ namespace Services
             var request = _httpContextAccessor.HttpContext!.Request;
             var resetUrl = $"https://localhost:7242/ResetPassword.html?email={Uri.EscapeDataString(user.Email!)}&token={Uri.EscapeDataString(token)}";
 
-            var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "Emails", "PasswordResetTemplate.html");
+            var templatePath = Path.Combine(_env.ContentRootPath, "Templates", "Emails", "PasswordResetTemplate.html");
             var htmlTemplate = await System.IO.File.ReadAllTextAsync(templatePath);
 
             var body = htmlTemplate
