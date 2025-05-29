@@ -28,4 +28,10 @@
     <None Include="wwwroot\ResetPassword.html" />
   </ItemGroup>
 
+  <ItemGroup>	  
+	  <Content Include="Templates\Emails\PasswordResetTemplate.html">		  
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+  </ItemGroup>
+
 </Project>
