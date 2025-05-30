@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstraction;
 using Shared;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Presentation
 {
@@ -9,26 +13,29 @@ namespace Presentation
     [Route("api/[controller]")]
     public class WorkersController(IServiceManager _serviceManager) : ControllerBase
     {
-        //GET: BaseUrl/api/Workers
+        // GET: api/Workers
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<WorkerDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var workers = await _serviceManager.WorkerService.GetAllAsync();
             return Ok(workers);
         }
 
-        //GET: BaseUrl/api/Workers/{id}
+        // GET: api/Workers/{id}
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(WorkerDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(Guid id)
         {
             var worker = await _serviceManager.WorkerService.GetByIdAsync(id);
             if (worker == null)
-                return NotFound();
+                return NotFound(new { message = $"Worker with id {id} not found." });
 
             return Ok(worker);
         }
 
-        //GET: BaseUrl/api/Workers/type/{type}
+        // GET: api/Workers/type/{type}
         [HttpGet("type/{type}")]
         [ProducesResponseType(typeof(IEnumerable<WorkerDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -48,13 +55,15 @@ namespace Presentation
             }
         }
 
-        // ... existing code ...
-        //POST: BaseUrl/api/Workers
+        // POST: api/Workers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateWorkerDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             try
             {
                 var id = await _serviceManager.WorkerService.CreateAsync(dto);
@@ -76,20 +85,36 @@ namespace Presentation
             }
         }
 
-        //PUT: BaseUrl/api/Workers/{id}
+        // PUT: api/Workers/{id}
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateWorkerDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var exists = await _serviceManager.WorkerService.ExistsAsync(id);
+            if (!exists)
+                return NotFound(new { message = $"Worker with id {id} not found." });
+
             await _serviceManager.WorkerService.UpdateAsync(id, dto);
             return NoContent();
         }
 
-        // DELETE: BaseUrl/api/Workers/{id}
+        // DELETE: api/Workers/{id}
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(Guid id)
         {
+            var exists = await _serviceManager.WorkerService.ExistsAsync(id);
+            if (!exists)
+                return NotFound(new { message = $"Worker with id {id} not found." });
+
             await _serviceManager.WorkerService.DeleteAsync(id);
             return NoContent();
-        }      
+        }
     }
 }
