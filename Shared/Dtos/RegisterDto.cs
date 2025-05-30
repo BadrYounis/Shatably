@@ -11,8 +11,8 @@ public record RegisterDto
     [Required(ErrorMessage = "LastName is required")]
     public string LastName { get; init; }
 
-    [Required(ErrorMessage = "Role is required")]
-    public string Role { get; init; } // لازم تبعت "Client" أو "Worker"
+    //[Required(ErrorMessage = "Role is required")]
+    public string? Role { get; init; } // لازم تبعت "Client" أو "Worker"
 
     [Required(ErrorMessage = "Email is required")]
     [EmailAddress]
