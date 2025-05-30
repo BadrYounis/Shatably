@@ -9,6 +9,17 @@ namespace Shatably.API
             #region Configure Services
             var builder = WebApplication.CreateBuilder(args);
 
+            // CORS Policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             // Add services to the container.
 
             //Presentation Services
@@ -29,6 +40,9 @@ namespace Shatably.API
             #region Configuring Kestrel Middlewares
 
             app.UseCustomExceptionMiddleware();
+
+            // Enable CORS
+            app.UseCors("AllowAll");
 
             await app.SeedDbAsync();
 

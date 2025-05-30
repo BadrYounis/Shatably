@@ -38,6 +38,85 @@ namespace Services
                 Username = user.UserName,
             };
         }
+
+        ///public async Task<UserResultDto> Register(RegisterDto registerDto)
+        ///{
+        ///    var baseUserName = registerDto.UserName ?? registerDto.Email.Split('@')[0];
+        ///    baseUserName = Regex.Replace(baseUserName, "[^a-zA-Z0-9]", "");
+        ///    var uniqueUserName = baseUserName;
+        ///    int suffix = 1;
+        ///
+        ///    while (await _userManager.FindByNameAsync(uniqueUserName) != null)
+        ///    {
+        ///        uniqueUserName = $"{baseUserName}{suffix++}";
+        ///    }
+        ///
+        ///    var user = new User()
+        ///    {
+        ///        UserName = uniqueUserName,
+        ///        FirstName = registerDto.FirstName,
+        ///        LastName = registerDto.LastName,
+        ///        Email = registerDto.Email,
+        ///        PhoneNumber = registerDto.PhoneNumber,             
+        ///    };
+        ///
+        ///    try
+        ///    {
+        ///        var createUser = await _userManager.CreateAsync(user, registerDto.Password);
+        ///        // handle if create user process is successed or not
+        ///        if (!createUser.Succeeded)
+        ///        {
+        ///            var errors = createUser.Errors.Select(e => e.Description).ToList();
+        ///            throw new ValidationException(errors);
+        ///        }
+        ///
+        ///        if (!await _userManager.IsInRoleAsync(user, registerDto.Role))
+        ///        {
+        ///            await _userManager.AddToRoleAsync(user, registerDto.Role);
+        ///        }
+        ///        // ربط Identity User مع الـ Business Entities
+        ///        if (registerDto.Role.ToLower() == "client")
+        ///        {
+        ///            var client = new Client
+        ///            {
+        ///                ClientId = Guid.NewGuid(),
+        ///                fullName = $"{registerDto.FirstName} {registerDto.LastName}",
+        ///                email = registerDto.Email,
+        ///                phoneNumber = registerDto.PhoneNumber ?? "",
+        ///                UserId = user.Id
+        ///            };
+        ///
+        ///            await _unitOfWork.GetRepository<Client, Guid>().AddAsync(client);
+        ///        }
+        ///        else if (registerDto.Role.ToLower() == "worker")
+        ///        {
+        ///            var worker = new Worker
+        ///            {
+        ///                workerId = Guid.NewGuid(),
+        ///                fullName = $"{registerDto.FirstName} {registerDto.LastName}",
+        ///                email = registerDto.Email,
+        ///                phoneNumber = registerDto.PhoneNumber ?? "",
+        ///                UserId = user.Id,
+        ///                Experience = 0,
+        ///                Price = 0,
+        ///                // Type = Domain.Type.Electrician
+        ///                // Type = default أو ممكن تضيفه في الـ DTO وتجيبه من هناك
+        ///            };
+        ///
+        ///            await _unitOfWork.GetRepository<Worker, Guid>().AddAsync(worker);
+        ///        }
+        ///        await _unitOfWork.SaveChangesAsync();
+        ///
+        ///        var roles = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "NoRole";
+        ///        return new UserResultDto(user.UserName, /*await CreateTokenAsync(user)*/ user.Email, roles);
+        ///    }
+        ///    catch (Exception)
+        ///    {
+        ///        // لو حدث خطأ في إضافة العميل/العامل أو الحفظ، نحذف المستخدم في السيكيورتي لمنع التناقض
+        ///        await _userManager.DeleteAsync(user);
+        ///        throw;
+        ///    }
+        ///}
         public async Task<UserResultDto> Register(RegisterDto registerDto)
         {
             var baseUserName = registerDto.UserName ?? registerDto.Email.Split('@')[0];
@@ -50,31 +129,34 @@ namespace Services
                 uniqueUserName = $"{baseUserName}{suffix++}";
             }
 
-            var user = new User()
+            var user = new User
             {
                 UserName = uniqueUserName,
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
                 Email = registerDto.Email,
-                PhoneNumber = registerDto.PhoneNumber,             
+                PhoneNumber = registerDto.PhoneNumber
             };
 
             try
             {
                 var createUser = await _userManager.CreateAsync(user, registerDto.Password);
-                // handle if create user process is successed or not
                 if (!createUser.Succeeded)
                 {
                     var errors = createUser.Errors.Select(e => e.Description).ToList();
                     throw new ValidationException(errors);
                 }
 
-                if (!await _userManager.IsInRoleAsync(user, registerDto.Role))
+                // Assign a default role if none provided
+                var role = string.IsNullOrWhiteSpace(registerDto.Role) ? "client" : registerDto.Role.ToLower();
+
+                if (!await _userManager.IsInRoleAsync(user, role))
                 {
-                    await _userManager.AddToRoleAsync(user, registerDto.Role);
+                    await _userManager.AddToRoleAsync(user, role);
                 }
-                // ربط Identity User مع الـ Business Entities
-                if (registerDto.Role.ToLower() == "client")
+
+                // Link to business entities if applicable
+                if (role == "client")
                 {
                     var client = new Client
                     {
@@ -87,7 +169,7 @@ namespace Services
 
                     await _unitOfWork.GetRepository<Client, Guid>().AddAsync(client);
                 }
-                else if (registerDto.Role.ToLower() == "worker")
+                else if (role == "worker")
                 {
                     var worker = new Worker
                     {
@@ -97,25 +179,25 @@ namespace Services
                         phoneNumber = registerDto.PhoneNumber ?? "",
                         UserId = user.Id,
                         Experience = 0,
-                        Price = 0,
-                        // Type = Domain.Type.Electrician
-                        // Type = default أو ممكن تضيفه في الـ DTO وتجيبه من هناك
+                        Price = 0
+                        // Type can be set from DTO later
                     };
 
                     await _unitOfWork.GetRepository<Worker, Guid>().AddAsync(worker);
                 }
+
                 await _unitOfWork.SaveChangesAsync();
 
                 var roles = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "NoRole";
-                return new UserResultDto(user.UserName, /*await CreateTokenAsync(user)*/ user.Email, roles);
+                return new UserResultDto(user.UserName, user.Email, roles);
             }
             catch (Exception)
             {
-                // لو حدث خطأ في إضافة العميل/العامل أو الحفظ، نحذف المستخدم في السيكيورتي لمنع التناقض
                 await _userManager.DeleteAsync(user);
                 throw;
             }
         }
+
         public async Task<bool> ForgotPasswordAsync(ForgotPasswordDTO dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
