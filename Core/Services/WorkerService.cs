@@ -93,7 +93,12 @@ public class WorkerService : IWorkerService
         _workerRepository.Value.Delete(worker);
         await _unitOfWork.SaveChangesAsync();
     }
-    private  WorkerDto ToDto(Worker worker)
+    public async Task<bool> ExistsAsync(Guid id)
+    {
+        var worker = await _workerRepository.Value.GetByIdAsync(id);
+        return worker != null;
+    }
+    private WorkerDto ToDto(Worker worker)
     {
         return new WorkerDto
         {

@@ -9,29 +9,34 @@ namespace Presentation
     [Route("api/[controller]")]
     public class AuthController(IServiceManager _serviceManager) : ControllerBase
     {
-        //BaseUrl/api/Auth/login
+        // BaseUrl/api/Auth/login
         [HttpPost("login")]
         public async Task<ActionResult<UserResultDto>> Login(LoginDto loginDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var login = await _serviceManager.AuthService.Login(loginDto);
-            return Ok(login);
+            var loginResult = await _serviceManager.AuthService.Login(loginDto);
+            if (loginResult == null)
+                return StatusCode(401, new { message = "Invalid credentials." });   //UnAuthorized
+
+            return Ok(loginResult);
         }
 
-        //BaseUrl/api/Auth/register
         [HttpPost("register")]
         public async Task<ActionResult<UserResultDto>> Register(RegisterDto registerDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var register = await _serviceManager.AuthService.Register(registerDto);
-            return Ok(register);
+            var registerResult = await _serviceManager.AuthService.Register(registerDto);
+            if (registerResult == null)
+                return BadRequest(new { message = "Registration failed." });
+
+            return Ok(new { message = "User registered successfully", user = registerResult });
         }
 
-        //BaseUrl/api/Auth/forgot-password
+        // BaseUrl/api/Auth/forgot-password
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO dto)
         {
@@ -40,17 +45,17 @@ namespace Presentation
 
             var result = await _serviceManager.AuthService.ForgotPasswordAsync(dto);
             if (!result)
-                return BadRequest("No user associated with this email.");
+                return NotFound(new { message = "No user associated with this email." });
 
-            return Ok("Password reset link has been sent to your email.");
+            return Ok(new { message = "Password reset link has been sent to your email." });
         }
 
-        //BaseUrl/api/Auth/reset-password
+        // BaseUrl/api/Auth/reset-password
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO dto)
         {
-                if (!ModelState.IsValid)
-        return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var result = await _serviceManager.AuthService.ResetPasswordAsync(dto);
 
@@ -66,16 +71,25 @@ namespace Presentation
                     details = result.Errors.Select(e => e.Description)
                 });
             }
+
             return Ok(new { message = "Password has been reset successfully." });
         }
 
-        //BaseUrl/api/Auth/signout
+        // BaseUrl/api/Auth/signout
         [HttpPost("signout")]
         [Authorize]
         public async Task<IActionResult> SignOut()
         {
-            await _serviceManager.AuthService.SignOutAsync();
-            return Ok(new { message = "Signed Out Successfully" });
+            try
+            {
+                await _serviceManager.AuthService.SignOutAsync();
+                return Ok(new { message = "Signed out successfully." });
+            }
+            catch (Exception ex)
+            {
+                // You could also log the error
+                return StatusCode(500, new { message = "An error occurred during sign out.", error = ex.Message });
+            }
         }
     }
 }

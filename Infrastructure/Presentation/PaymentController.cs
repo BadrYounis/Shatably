@@ -1,23 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Services.Abstraction;
 using Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Presentaion
+namespace Presentation
 {
     [ApiController]
     [Route("api/[controller]")]
     public class PaymentController(IServiceManager serviceManager) : ControllerBase
     {
+        // POST: api/payment/{basketId}
         [HttpPost("{basketId}")]
-        public async Task<ActionResult<BasketDto>> CreateOrUpdatePaymentIntent(string basketId)
+        [ProducesResponseType(typeof(BasketDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateOrUpdatePaymentIntent(string basketId)
         {
+            if (string.IsNullOrWhiteSpace(basketId))
+                return BadRequest(new { message = "Basket ID must be provided." });
+
             var result = await serviceManager.PaymentService.CreateOrUpdatePaymnetIntentAsync(basketId);
+
+            if (result is null)
+                return NotFound(new { message = $"Basket with ID '{basketId}' not found or invalid." });
+
             return Ok(result);
         }
     }
