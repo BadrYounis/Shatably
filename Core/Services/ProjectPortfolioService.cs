@@ -12,18 +12,15 @@ namespace Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly Lazy<IGenericRepository<ProjectPortfolio, Guid>> _projectRepository;
-        private readonly string? _imageBaseUrl;
-
         public ProjectPortfolioService(IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _projectRepository = new Lazy<IGenericRepository<ProjectPortfolio, Guid>>(() => _unitOfWork.GetRepository<ProjectPortfolio, Guid>());
-            _imageBaseUrl = configuration["BaseUrls:ImageBaseUrl"];
         }
         public async Task<PaginatedResult<ProjectPortfolioDto>> GetAllAsync(ProjectSpecificationsParameters parameters)
         {
-            var projects = await _projectRepository.Value.GetAllAsync(new ProjectSpecifications(parameters));     //guid???
-                                                                                                                  // var projects=await _unitOfWork.GetRepository<ProjectPortfolio,Guid>().GetAllAsync(new ProjectSpecifications(parameters));
+            var projects = await _projectRepository.Value.GetAllAsync(new ProjectSpecifications(parameters));     
+                                                                                                                  
             var totalCount = await _unitOfWork.GetRepository<ProjectPortfolio, Guid>().CountAsync(new ProjectCountSpecifications(parameters));
             var projectResult = projects.Select(MapToDto);
             var result = new PaginatedResult<ProjectPortfolioDto>(
@@ -49,10 +46,10 @@ namespace Services
                 projectId = Guid.NewGuid(),
                 Title = dto.Title,
                 description = dto.Description,
-                MainImageUrl = dto.mainImageUrl,
+                MainImageUrl = dto.mainImageUrl!,
                 Images = dto.ImageUrls?.Select(url => new ProjectImages { ImageUrl = url }).ToList()!,
                 createdDate = DateTime.UtcNow,
-                Price = dto.Price,
+                Price = dto.Price ?? 0m,
             };
 
             await _projectRepository.Value.AddAsync(project);
@@ -100,12 +97,12 @@ namespace Services
                 Price=project.Price,
                 mainImageUrl = string.IsNullOrEmpty(project.MainImageUrl)
                 ? string.Empty
-                : $"{_imageBaseUrl}/{project.MainImageUrl}",
+                : $"{project.MainImageUrl}",
                 ImageUrls = project.Images != null
         ? new HashSet<string>(
             project.Images
                 .Where(i => !string.IsNullOrEmpty(i.ImageUrl))
-                .Select(i => $"{_imageBaseUrl}/{i.ImageUrl}")
+                .Select(i => $"{i.ImageUrl}")
           )
         : new HashSet<string>(),
 

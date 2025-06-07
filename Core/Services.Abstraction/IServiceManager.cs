@@ -12,6 +12,7 @@
         public IOrderService OrderService { get; }
         public IRatingReviewService RatingReviewService { get; }
         public IPaymentService PaymentService { get; }
+        public IImageService ImageService { get; }
 
     }
 }

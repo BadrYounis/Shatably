@@ -20,9 +20,7 @@ namespace Shared.Dtos
         [Required(ErrorMessage = "Design description is required.")]
         [StringLength(200, ErrorMessage = "Product description cannot exceed 200 characters.")]
         public string Description { get; set; }
-
-        [Required(ErrorMessage = "Design image is required.")]
-        public string imageUrl { get; set; }
+        public string? imageUrl { get; set; }
 
         //[Required(ErrorMessage = "Price is required.")]
         //[Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]

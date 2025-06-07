@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Shared;
 public class UpdateProjectPortfolioDto
@@ -13,11 +14,12 @@ public class UpdateProjectPortfolioDto
 
     [Required(ErrorMessage = "Image URL is required.")]
     [Url(ErrorMessage = "Image URL must be a valid URL.")]
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
     public HashSet<string>? ImageUrls { get; set; }
-
 
     [Required(ErrorMessage = "Price is required.")]
     [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
     public decimal Price { get; set; }
+    //public IFormFile? MainImageFile { get; set; }
+    //public List<IFormFile>? GalleryImages { get; set; }
 }

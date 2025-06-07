@@ -14,7 +14,6 @@ namespace Services.Specifications
         public DesignTemplateWithCategorySpecifications(Guid id)
           : base(product => product.templateId == id)
         {
-            AddInclude(p => p.category);
         }
         public DesignTemplateWithCategorySpecifications(DesignTemplateSpecificationsParameters parameters)
             : base(product =>

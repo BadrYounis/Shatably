@@ -19,11 +19,7 @@ namespace Services.Mapper
                 Rating = ratingReview.Rating,
                 Comment = ratingReview.Comment,
                 CreatedAt = ratingReview.CreatedAt,
-                ClientId = ratingReview.ClientId,
-                WorkerId = ratingReview.WorkerId,
-                ProjectPortfolioId = ratingReview.ProjectPortfolioId,
-                WorkerName = ratingReview.Worker?.fullName,
-                ProjectTitle = ratingReview.ProjectPortfolio?.Title
+                ClientId = ratingReview.ClientId
             };
         }
         public static RatingReview MapToRatingReview(RatingReviewDto dto)
@@ -34,9 +30,7 @@ namespace Services.Mapper
                 Rating = dto.Rating,
                 Comment = dto.Comment,
                 CreatedAt = dto.CreatedAt,
-                ClientId = dto.ClientId,
-                WorkerId = dto.WorkerId,
-                ProjectPortfolioId = dto.ProjectPortfolioId
+                ClientId = dto.ClientId
             };
         }
         public static RatingReview MapToRatingReview(CreateRatingReviewDto dto)

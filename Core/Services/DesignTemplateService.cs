@@ -1,16 +1,11 @@
-﻿using Domain.Contracts;
-using Domain;
-using Services.Abstraction;
-using Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Shared.Dtos;
-using Services.Specifications;
+﻿using Domain;
+using Domain.Contracts;
 using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
+using Services.Abstraction;
+using Services.Specifications;
+using Shared;
+using Shared.Dtos;
 
 namespace Services
 {
@@ -18,13 +13,11 @@ namespace Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly Lazy<IGenericRepository<DesignTemplate, Guid>> _designTemplateRepository;
-        private  readonly string? _imageBaseUrl;
-        public DesignTemplateService(IUnitOfWork unitOfWork , IConfiguration configuration)
+        public DesignTemplateService(IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _designTemplateRepository = new Lazy<IGenericRepository<DesignTemplate, Guid>>(
                 () => _unitOfWork.GetRepository<DesignTemplate, Guid>());
-            _imageBaseUrl = configuration["BaseUrls:ImageBaseUrl"];
         }
         public async Task<PaginatedResult<DesignTemplateDto>> GetAllAsync(DesignTemplateSpecificationsParameters parameters)
         {
@@ -38,13 +31,11 @@ namespace Services
                 designResult
                 );
             return result;
-
         }
-
         public async Task<DesignTemplateDto> GetByIdAsync(Guid templateId)
         {
             var design = await _designTemplateRepository.Value.GetByIdAsync(new DesignTemplateWithCategorySpecifications(templateId));
-           
+
 
             return design is null ? throw new DesignTemplateNotFoundException(templateId) : MapToDto(design);
         }
@@ -61,8 +52,8 @@ namespace Services
                 name = dto.Name,
                 category = dto.Category,
                 description = dto.Description,
-                imageUrl=dto.imageUrl,
-                
+                imageUrl = dto.imageUrl!,
+
             };
             await _designTemplateRepository.Value.AddAsync(design);
             await _unitOfWork.SaveChangesAsync();
@@ -88,17 +79,15 @@ namespace Services
             _designTemplateRepository.Value.Delete(design);
             await _unitOfWork.SaveChangesAsync();
         }
-
-        
-        private DesignTemplateDto MapToDto(DesignTemplate design ) => new DesignTemplateDto
+        private DesignTemplateDto MapToDto(DesignTemplate design) => new DesignTemplateDto
         {
-             templateId= design.templateId,
-             Name= design.name,
-             Category= design.category,
-             description= design.description,
+            templateId = design.templateId,
+            Name = design.name,
+            Category = design.category,
+            description = design.description,
             imageUrl = string.IsNullOrEmpty(design.imageUrl)
                 ? string.Empty
-                : $"{_imageBaseUrl}/{design.imageUrl}"
+                : $"{design.imageUrl}"
 
         };
     }
