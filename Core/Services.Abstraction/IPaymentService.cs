@@ -11,5 +11,7 @@ namespace Services.Abstraction
     {
         //Create or Update PaymentIntent
         public Task<BasketDto> CreateOrUpdatePaymnetIntentAsync(string basketId);
+        public Task UpdatePaymnetStatus(string request, string stripeHeaders);
+
     }
 }

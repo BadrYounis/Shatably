@@ -4,7 +4,9 @@ using Domain.Entities.OrderEntities;
 using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Org.BouncyCastle.Crypto;
+using Persistence.Repositories;
 using Services.Abstraction;
+using Services.Specification;
 using Shared;
 using Stripe;
 using System;
@@ -13,6 +15,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Product = Domain.Product;
+using Order = Domain.Entities.OrderEntities.Order;
+
 
 namespace Services
 {
@@ -142,6 +146,53 @@ namespace Services
                 Quantity = item.Quantity
             }).ToList()
         };
+
+        public async Task UpdatePaymnetStatus(string request, string stripeHeaders)
+        {
+            var endPointSecret = _configuration.GetSection("StripeSettings")["EndPointSecret"];
+            var stripeEvent = EventUtility.ConstructEvent(request,
+                stripeHeaders, endPointSecret, throwOnApiVersionMismatch: false);
+            var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
+
+            // Handle the event
+            // If on SDK version < 46, use class Events instead of EventTypes
+            if (stripeEvent.Type == EventTypes.PaymentIntentSucceeded)
+            {
+                await UpdatePaymentStatusSucceeded(paymentIntent.Id);
+            }
+            else if (stripeEvent.Type == EventTypes.PaymentIntentPaymentFailed)
+            {
+                await UpdatePaymentStatusFailed(paymentIntent.Id);
+
+            }
+            // ... handle other event types
+            else
+            {
+                Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
+            }
+
+
+
+        }
+
+        private async Task UpdatePaymentStatusFailed(string PaymentIntentid)
+        {
+            var orderRepo = _unitOfWork.GetRepository<Order, Guid>();
+            var order = await orderRepo.GetByIdAsync(new OrderWithPaymentIntentIdSpecifications(PaymentIntentid)) ?? throw new Exception();
+            order.PaymentStatus = OrderPaymentStatus.PaymentFaild;
+            orderRepo.Update(order);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        private async Task UpdatePaymentStatusSucceeded(string PaymentIntentid)
+        {
+            var orderRepo = _unitOfWork.GetRepository<Order, Guid>();
+            var order = await orderRepo.GetByIdAsync(new OrderWithPaymentIntentIdSpecifications(PaymentIntentid)) ?? throw new Exception();
+            order.PaymentStatus = OrderPaymentStatus.PaymentReceived;
+            orderRepo.Update(order);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
     }
 
 }
