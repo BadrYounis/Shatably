@@ -1,11 +1,6 @@
 ﻿using Domain;
 using Domain.Contracts;
 using Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Specifications
 {
@@ -17,7 +12,7 @@ namespace Services.Specifications
         }
         public ProjectSpecifications(ProjectSpecificationsParameters parameters)
            : base(project =>
-           (!(string.IsNullOrWhiteSpace(parameters.Title)) || project.Title == parameters.Title)
+           ((string.IsNullOrWhiteSpace(parameters.Title)) || project.Title == parameters.Title)
            &&
            (string.IsNullOrWhiteSpace(parameters.Search) || project.Title.ToLower().Contains(parameters.Search.ToLower().Trim()))
            )

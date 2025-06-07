@@ -26,21 +26,64 @@ namespace Presentation
             return Ok(result);
         }
 
-        [HttpPost] // POST: api/projects
+        [HttpPost]
+        [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(ProjectPortfolioDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateProjectPortfolioDto dto)
+        public async Task<IActionResult> Create(
+            [FromForm] CreateProjectPortfolioDto dto,
+             IFormFile? mainImageFile,
+             List<IFormFile>? galleryImages)
         {
+            if (mainImageFile is not null)
+            {
+                var mainImagePath = await _serviceManager.ImageService.UploadImageAsync(mainImageFile, "ProjectImages");
+                dto.mainImageUrl = $"{Request.Scheme}://{Request.Host}{mainImagePath}";
+            }
+
+            if (galleryImages is not null && galleryImages.Count > 0)
+            {
+                dto.ImageUrls = new HashSet<string>();
+
+                foreach (var file in galleryImages)
+                {
+                    var imagePath = await _serviceManager.ImageService.UploadImageAsync(file, "ProjectImages");
+                    dto.ImageUrls.Add($"{Request.Scheme}://{Request.Host}{imagePath}");
+                }
+            }
+
             var id = await _serviceManager.ProjectPortfolioService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id }, new { id });
         }
 
-        [HttpPut("{id}")] // PUT: api/projects/{id}
+        [HttpPut("{id}")]
+        [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProjectPortfolioDto dto)
+        public async Task<IActionResult> Update(
+            Guid id,
+            [FromForm] UpdateProjectPortfolioDto dto,
+            IFormFile? mainImageFile,
+            List<IFormFile>? galleryImages)
         {
+            if (mainImageFile is not null)
+            {
+                var mainImagePath = await _serviceManager.ImageService.UploadImageAsync(mainImageFile, "ProjectImages");
+                dto.ImageUrl = $"{Request.Scheme}://{Request.Host}{mainImagePath}";
+            }
+
+            if (galleryImages is not null && galleryImages.Count > 0)
+            {
+                dto.ImageUrls = new HashSet<string>();
+
+                foreach (var file in galleryImages)
+                {
+                    var imagePath = await _serviceManager.ImageService.UploadImageAsync(file, "ProjectImages");
+                    dto.ImageUrls.Add($"{Request.Scheme}://{Request.Host}{imagePath}");
+                }
+            }
+
             await _serviceManager.ProjectPortfolioService.UpdateAsync(id, dto);
             return NoContent();
         }

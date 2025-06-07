@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 using Persistence.Data;
 using Services.Abstraction;
 using Shared;
-using static StackExchange.Redis.Role;
 
 namespace Services
 {
@@ -25,8 +24,7 @@ namespace Services
         private readonly Lazy<IWorkerService> _workerService;
         private readonly Lazy<IRatingReviewService> _ratingReviewService;
         private readonly Lazy<IPaymentService> _paymentService;
-
-
+        private readonly Lazy<IImageService> _imageService;
         public ServiceManager(IUnitOfWork unitOfWork, IBasketRepository _basketRepository, UserManager<User> _userManager,
             IOptions<JwtOptions> _options, AppDbContext _context, IEmailService _emailService
             , IHttpContextAccessor _httpContextAccessor, LinkGenerator _linkGenerator, IConfiguration configuration, IWebHostEnvironment _env)
@@ -47,8 +45,11 @@ namespace Services
 
             _orderService = new Lazy<IOrderService>(() => new OrderService(unitOfWork, _basketRepository));
 
-            _ratingReviewService = new Lazy<IRatingReviewService>(()=> new RatingReviewService(unitOfWork));
-            _paymentService = new Lazy<IPaymentService>(() => new PaymentService( unitOfWork, configuration, _basketRepository));
+            _ratingReviewService = new Lazy<IRatingReviewService>(() => new RatingReviewService(unitOfWork));
+
+            _paymentService = new Lazy<IPaymentService>(() => new PaymentService(unitOfWork, configuration, _basketRepository));
+
+            _imageService = new Lazy<IImageService>(() => new ImageService(_env));
 
         }
         public IProductService ProductService => _productService.Value;
@@ -61,6 +62,7 @@ namespace Services
         public IOrderService OrderService => _orderService.Value;
         public IRatingReviewService RatingReviewService => _ratingReviewService.Value;
         public IPaymentService PaymentService => _paymentService.Value;
+        public IImageService ImageService => _imageService.Value;
 
     }
 }

@@ -109,7 +109,7 @@ public class WorkerService : IWorkerService
             Type = worker.Type.ToString()!,
             ProfilePhotoUrl = string.IsNullOrEmpty(worker.ProfilePhotoUrl)
                 ? string.Empty
-                : $"{_imageBaseUrl}/{worker.ProfilePhotoUrl}",
+                : $"{worker.ProfilePhotoUrl}",
             Price = worker.Price,
             Experience = worker.Experience,
             RatingReview = (worker.RatingReviews != null && worker.RatingReviews.Any())

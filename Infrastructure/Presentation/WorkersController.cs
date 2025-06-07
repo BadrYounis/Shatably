@@ -57,12 +57,21 @@ namespace Presentation
 
         // POST: api/Workers
         [HttpPost]
+        [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateWorkerDto dto)
+        public async Task<IActionResult> Create(
+            [FromForm] CreateWorkerDto dto,
+            IFormFile? mainImageFile)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (mainImageFile is not null)
+            {
+                var mainImagePath = await _serviceManager.ImageService.UploadImageAsync(mainImageFile, "WorkerImages");
+                dto.ProfilePhotoUrl = $"{Request.Scheme}://{Request.Host}{mainImagePath}";
+            }
 
             try
             {
@@ -87,10 +96,14 @@ namespace Presentation
 
         // PUT: api/Workers/{id}
         [HttpPut("{id}")]
+        [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateWorkerDto dto)
+        public async Task<IActionResult> Update(
+            Guid id,
+            [FromForm] UpdateWorkerDto dto,
+            IFormFile? mainImageFile)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -98,6 +111,12 @@ namespace Presentation
             var exists = await _serviceManager.WorkerService.ExistsAsync(id);
             if (!exists)
                 return NotFound(new { message = $"Worker with id {id} not found." });
+
+            if (mainImageFile is not null)
+            {
+                var mainImagePath = await _serviceManager.ImageService.UploadImageAsync(mainImageFile, "WorkerImages");
+                dto.ProfilePhotoUrl = $"{Request.Scheme}://{Request.Host}{mainImagePath}";
+            }
 
             await _serviceManager.WorkerService.UpdateAsync(id, dto);
             return NoContent();

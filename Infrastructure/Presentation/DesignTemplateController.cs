@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstraction;
 using Shared;
@@ -45,10 +46,18 @@ namespace Presentation
         [HttpPost]
         [ProducesResponseType(typeof(DesignTemplateDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateDesignTemplateDto dto)
+        public async Task<IActionResult> Create(
+            [FromForm] CreateDesignTemplateDto dto,
+            IFormFile? mainImageFile)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (mainImageFile is not null)
+            {
+                var mainImagePath = await _serviceManager.ImageService.UploadImageAsync(mainImageFile, "DesignImages");
+                dto.imageUrl = $"{Request.Scheme}://{Request.Host}{mainImagePath}";
+            }
 
             var id = await _serviceManager.DesignTemplateService.CreateAsync(dto);
             var design = await _serviceManager.DesignTemplateService.GetByIdAsync(id);
@@ -60,7 +69,10 @@ namespace Presentation
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateDesignTemplateDto dto)
+        public async Task<IActionResult> Update(
+            Guid id,
+            [FromForm] UpdateDesignTemplateDto dto,
+            IFormFile? mainImageFile)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -68,6 +80,12 @@ namespace Presentation
             var existing = await _serviceManager.DesignTemplateService.GetByIdAsync(id);
             if (existing == null)
                 return NotFound(new { message = $"Design template with ID {id} not found." });
+
+            if (mainImageFile is not null)
+            {
+                var mainImagePath = await _serviceManager.ImageService.UploadImageAsync(mainImageFile, "DesignImages");
+                dto.imageUrl = $"{Request.Scheme}://{Request.Host}{mainImagePath}";
+            }
 
             await _serviceManager.DesignTemplateService.UpdateAsync(id, dto);
             return NoContent();
