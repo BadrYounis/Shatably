@@ -26,5 +26,16 @@ namespace Presentation
 
             return Ok(result);
         }
+
+        [HttpPost("webHook")]
+        public async Task<ActionResult> webHook()
+        {
+            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+            var stripeHeaders = Request.Headers["Stripe-Signature"];
+            await serviceManager.PaymentService.UpdatePaymnetStatus(stripeHeaders!, json);
+            return new EmptyResult();
+        }
     }
+
 }
+
