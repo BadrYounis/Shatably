@@ -33,36 +33,47 @@ namespace E_Commerce.API.Middlewares
         }
         private async Task HandleNotFoundApiAsync(HttpContext httpContext)
         {
-            //Set Content Type (application/json)
+            if (httpContext.Response.HasStarted)
+            {
+                _logger.LogWarning("Cannot handle 404, response has already started.");
+                return;
+            }
+
             httpContext.Response.ContentType = "application/json";
 
-            //Return Standard Response (ErrorDetails)
-            var response = new ErrorDetails   //C# Object
+            var response = new ErrorDetails
             {
-                StatusCode = (int)HttpStatusCode.NotFound,   //Body
+                StatusCode = (int)HttpStatusCode.NotFound,
                 ErrorMessage = $"The Endpoint {httpContext.Request.Path} Not Found"
             }.ToString();
+
             await httpContext.Response.WriteAsync(response);
         }
         private async Task HandleExceptionAsync(HttpContext httpContext, Exception ex)
         {
-            //Set Content Type (application/json)
+            if (httpContext.Response.HasStarted)
+            {
+                _logger.LogWarning("Cannot handle exception, response has already started.");
+                return;
+            }
+
             httpContext.Response.ContentType = "application/json";
-            //Set Status Code To 500
-            httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;   //500
-            //Return Standard Response (ErrorDetails)
-            var response = new ErrorDetails   //C# Object
+
+            var response = new ErrorDetails
             {
                 ErrorMessage = ex.Message
             };
+
             httpContext.Response.StatusCode = ex switch
             {
-                NotFoundException => (int)HttpStatusCode.NotFound,   //404
-                UnAuthorizedException => (int)HttpStatusCode.Unauthorized,   //401
-                ValidationException validationException => HandleValidationException(validationException, response),  
-                _ => (int)HttpStatusCode.InternalServerError   //500
+                NotFoundException => (int)HttpStatusCode.NotFound,
+                UnAuthorizedException => (int)HttpStatusCode.Unauthorized,
+                ValidationException validationException => HandleValidationException(validationException, response),
+                _ => (int)HttpStatusCode.InternalServerError
             };
-            response.StatusCode = httpContext.Response.StatusCode;                 
+
+            response.StatusCode = httpContext.Response.StatusCode;
+
             await httpContext.Response.WriteAsync(response.ToString());
         }
         private int HandleValidationException(ValidationException validationException, ErrorDetails response)
