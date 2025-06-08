@@ -11,9 +11,9 @@ namespace Persistence.Managers
         public async Task<User?> GetUserByIdAsync(Guid id)
             => await _userManager.FindByIdAsync(id.ToString());
         public async Task<User?> FindByIdAsync(string id)
-        => await _userManager.FindByIdAsync(id);
+            => await _userManager.FindByIdAsync(id);
         public async Task<IList<string>> GetUserRolesAsync(User user)
-            => await _userManager.GetRolesAsync(user);    
+            => await _userManager.GetRolesAsync(user);
         public async Task<User> AddUserAsync(User user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);
@@ -21,7 +21,7 @@ namespace Persistence.Managers
                 throw new Exception("User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
             return user;
         }
-        public async Task<bool> UpdateUserAsync(User user)
+        public async Task<bool> UpdateAsync(User user)
         {
             var result = await _userManager.UpdateAsync(user);
             return result.Succeeded;
@@ -33,6 +33,6 @@ namespace Persistence.Managers
 
             var result = await _userManager.DeleteAsync(user);
             return result.Succeeded;
-        }   
+        }
     }
 }
