@@ -8,10 +8,11 @@ namespace Services.Specifications
     {
         public ProjectCountSpecifications(ProjectSpecificationsParameters parameters)
           : base(project =>
-          (!(string.IsNullOrWhiteSpace(parameters.Title) )|| project.Title == parameters.Title)
+          ((string.IsNullOrWhiteSpace(parameters.Title)) || project.Title == parameters.Title)
           &&
           (string.IsNullOrWhiteSpace(parameters.Search) || project.Title.ToLower().Contains(parameters.Search.ToLower().Trim()))
           )
-        { }
+        {
+        }
     }
 }

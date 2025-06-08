@@ -19,14 +19,13 @@ namespace Services
         }
         public async Task<PaginatedResult<ProjectPortfolioDto>> GetAllAsync(ProjectSpecificationsParameters parameters)
         {
-            var projects = await _projectRepository.Value.GetAllAsync(new ProjectSpecifications(parameters));     
-                                                                                                                  
+            var projects = await _projectRepository.Value.GetAllAsync(new ProjectSpecifications(parameters));                                                                                                                   
             var totalCount = await _unitOfWork.GetRepository<ProjectPortfolio, Guid>().CountAsync(new ProjectCountSpecifications(parameters));
             var projectResult = projects.Select(MapToDto);
             var result = new PaginatedResult<ProjectPortfolioDto>(
-                totalCount,
-                parameters.pageIndex,
                 projectResult.Count(),
+                parameters.pageIndex,
+                totalCount,
                 projectResult
                 );
             return result;
