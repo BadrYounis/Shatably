@@ -11,7 +11,7 @@ namespace Services
     {
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
-            var users = await _userManager.GetAllUsersAsync();
+            var users = await _userManager.GetAllUsersAsync() ?? new List<User>();
             return users.Select(MapToUserDto);
         }
         public async Task<UserDto?> GetUserByIdAsync(Guid id)
@@ -158,12 +158,12 @@ namespace Services
             LastName = user.LastName,
             IsActive = user.IsActive,
             CreatedAt = user.CreatedAt,
-            Address = new AddressDto
+            Address = user.Address != null ? new AddressDto
             {
-                city = user.Address!.city,
+                city = user.Address.city,
                 region = user.Address.region,
-                street = user.Address.street,
-            }
+                street = user.Address.street
+            } : null
         };
     }
 }
