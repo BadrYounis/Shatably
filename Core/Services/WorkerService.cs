@@ -3,6 +3,7 @@ using Domain.Contracts;
 using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Services.Abstraction;
+using Services.Specifications;
 using Shared;
 using Shared.Dtos;
 
@@ -22,12 +23,13 @@ public class WorkerService : IWorkerService
     }
     public async Task<IEnumerable<WorkerDto>> GetAllAsync()
     {
-        var workers = await _workerRepository.Value.GetAllAsync();
-        return workers.Select(ToDto);
+        var workers = await _workerRepository.Value.GetAllAsync(new WorkerWithRatingReviewSpecifications());
+       var workerResult= workers.Select(ToDto);
+        return workerResult;
     }
     public async Task<WorkerDto?> GetByIdAsync(Guid id)
     {
-        var worker = await _workerRepository.Value.GetByIdAsync(id);
+        var worker = await _workerRepository.Value.GetByIdAsync(new WorkerWithRatingReviewSpecifications(id));
         if (worker is null)
             throw new WorkerNotFoundException(id);
 
