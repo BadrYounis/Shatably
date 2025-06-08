@@ -11,7 +11,7 @@ namespace Presentation
     {
         [HttpGet] // GET: api/projects
         [ProducesResponseType(typeof(IEnumerable<ProjectPortfolioDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ProjectPortfolioDto>>> GetAll([FromQuery] ProjectSpecificationsParameters parameters)
+        public async Task<ActionResult<PaginatedResult<ProjectPortfolioDto>>> GetAll([FromQuery] ProjectSpecificationsParameters parameters)
         {
             var result = await _serviceManager.ProjectPortfolioService.GetAllAsync(parameters);
             return Ok(result);

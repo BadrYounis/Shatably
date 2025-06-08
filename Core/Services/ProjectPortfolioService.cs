@@ -24,9 +24,9 @@ namespace Services
             var totalCount = await _unitOfWork.GetRepository<ProjectPortfolio, Guid>().CountAsync(new ProjectCountSpecifications(parameters));
             var projectResult = projects.Select(MapToDto);
             var result = new PaginatedResult<ProjectPortfolioDto>(
-                projectResult.Count(),
-                parameters.pageIndex,
                 totalCount,
+                parameters.pageIndex,
+                projectResult.Count(),
                 projectResult
                 );
             return result;
