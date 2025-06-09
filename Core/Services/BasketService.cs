@@ -37,7 +37,8 @@ namespace Services
                 ProductName = item.ProductName,
                 Price = item.Price,
                 Quantity = item.Quantity,
-                 ImageUrl = item.ImageUrl,
+                ImageUrl = item.ImageUrl,
+
             }).ToList()
         };
 
@@ -48,6 +49,7 @@ namespace Services
 
             foreach (var item in dto.Items)
             {
+
                 var product = await _productService.GetByIdAsync(item.ProductId);
                 if (product == null)
                     throw new NotFoundException($"Product with ID {item.ProductId} not found");
@@ -68,5 +70,6 @@ namespace Services
                 Items = items
             };
         }
+
     }
 }
