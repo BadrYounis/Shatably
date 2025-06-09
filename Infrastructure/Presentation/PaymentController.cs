@@ -14,7 +14,7 @@ namespace Presentation
         [ProducesResponseType(typeof(BasketDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateOrUpdatePaymentIntent(string basketId)
+        public async Task<ActionResult<BasketDto>> CreateOrUpdatePaymentIntent(string basketId)
         {
             if (string.IsNullOrWhiteSpace(basketId))
                 return BadRequest(new { message = "Basket ID must be provided." });

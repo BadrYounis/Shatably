@@ -126,7 +126,10 @@ namespace Services
                 ProductName = item.ProductName,
                 Price = item.Price,
                 Quantity = item.Quantity,
-            }).ToList()
+                
+            }).ToList(),
+             PaymentIntentId = basket.PaymentIntentId,
+            ClientSecret = basket.ClientSecret
         };
 
         // Manual Mapping: BasketDto -> Basket

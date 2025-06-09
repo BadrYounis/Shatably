@@ -36,6 +36,7 @@ namespace Services
                 ProductName = item.ProductName,
                 Price = item.Price,
                 Quantity = item.Quantity,
+                ImageUrl = item.ImageUrl,
             }).ToList()
         };
 
@@ -48,7 +49,9 @@ namespace Services
                 ProductId = item.ProductId,
                 ProductName = item.ProductName,
                 Price = item.Price,
-                Quantity = item.Quantity
+                Quantity = item.Quantity,
+                ImageUrl = item.ImageUrl,
+
             }).ToList()
         };
     }
