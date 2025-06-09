@@ -40,9 +40,7 @@ namespace Services
                 orderItems.Add(CreateOrderItem(item, product));
             }
 
-            // DeliveryMethod
-            var deliveryMethod = await _unitOfWork.GetRepository<DeliveryMethod,Guid>().GetByIdAsync(request.DeliveryMethodId)
-                ?? throw new DeliveryMethodNotFoundException(request.DeliveryMethodId);
+           
 
             // SubTotal
             var orderRepo = _unitOfWork.GetRepository<Order, Guid>();
@@ -52,9 +50,12 @@ namespace Services
                 orderRepo.Delete(existingOrder);
             }
             var subTotal = orderItems.Sum(item => item.Price * item.Quantity);
-           
+            var shippingPrice = 50;
+
+
             // create order
-            var order=new Order(userEmail, shippingAddress, orderItems,deliveryMethod,subTotal,basket.PaymentIntentId);
+            var order =new Order(userEmail, shippingAddress, orderItems,subTotal,basket.PaymentIntentId);
+            order.ShippingPrice = shippingPrice;
 
             // save db
             await orderRepo.AddAsync(order);
@@ -70,12 +71,6 @@ namespace Services
         => new OrderItem(new ProductInOrderItem(product.productId, product.name, product.imageUrl),
              item.Quantity, product.price);
 
-
-        public async Task<IEnumerable<DeliveryMethodResult>> GetDeliveryMethodsAsync()
-        {
-            var methods=await _unitOfWork.GetRepository<DeliveryMethod,Guid>().GetAllAsync();
-            return methods.Select(OrderMapper.MapToDeliveryMethodResult);
-        }
 
         public async Task<OrderResult> GetOrderByIdAsync(Guid id)
         {

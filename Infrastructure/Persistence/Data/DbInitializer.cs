@@ -57,31 +57,7 @@ namespace Persistence.Data
             }
         }
 
-        public async Task InitializeAsync()
-        {
-            try
-            {
-                if (_dbContext.Database.GetPendingMigrations().Any())
-                {
-                    await _dbContext.Database.MigrateAsync();
-                    if (!_dbContext.DeliveryMethods.Any())
-                    {
-                        //D:\Team\Final ISA\Shatably\Infrastructure\Persistence\Data\DataSeeding\delivery.json
-                        var methodsData = await File.ReadAllTextAsync(@"..\Infrastructure\Persistence\Data\DataSeeding\delivery.json");
-                        var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(methodsData);
-                        if (methods is not null && methods.Any())
-                        {
-                            await _dbContext.AddRangeAsync(methods);
-                            await _dbContext.SaveChangesAsync();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Data Seeding Error: {ex.Message}");
-            }
-        }
+       
 
 
         //public async Task InitializeAsync()

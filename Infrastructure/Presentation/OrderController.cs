@@ -57,13 +57,6 @@ namespace Presentation
             return Ok(order);
         }
 
-        // GET: api/order/deliverymethods
-        [HttpGet("deliverymethods")]
-        [ProducesResponseType(typeof(IEnumerable<DeliveryMethodResult>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetDeliveryMethods()
-        {
-            var methods = await serviceManager.OrderService.GetDeliveryMethodsAsync();
-            return Ok(methods);
-        }
+      
     }
 }

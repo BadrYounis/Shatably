@@ -18,7 +18,6 @@ namespace Services.Abstraction
         // Create Order ==> orderRequest ==> (OrderRequest Req , string UserEmail)
         Task<OrderResult> CreateOrderAsync(OrderRequest request, string userEmail);
 
-        // Get All Delivery Methods ==> IEnumrable<DeliveryMethodResult>
-        Task<IEnumerable<DeliveryMethodResult>> GetDeliveryMethodsAsync();
+       
     }
 }

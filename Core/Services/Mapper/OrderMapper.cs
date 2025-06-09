@@ -33,17 +33,7 @@ namespace Services.Mapper
             };
         }
 
-        public static DeliveryMethodResult MapToDeliveryMethodResult(DeliveryMethod method)
-        {
-            return new DeliveryMethodResult
-            {
-                Id=method.Id,
-                ShortName = method.ShortName,
-                Description = method.Description,
-                Price = method.Price,
-                DeliveryTime = method.DeliveryTime,               
-            };
-        }
+       
 
         public static OrderItemDTO MapToOrderItemDTO(OrderItem item)
         {
@@ -60,16 +50,18 @@ namespace Services.Mapper
 
         public static OrderResult MapToOrderResult(Order order)
         {
+           
+            var shippingPrice = order.ShippingPrice;
             return new OrderResult
             {
                 Id = order.Id,
                 UserEmail = order.UserEmail,
                 OrderDate = order.OrderDate,
                 ShippingAddress = MapToAddressDTO(order.ShippingAddress),
-                DeliveryMethod = order.DeliveryMethod.ShortName,
+               // DeliveryMethod = order.DeliveryMethod.ShortName,
                 orderItems = order.orderItems.Select(MapToOrderItemDTO).ToList(),
                 SubTotal = order.SubTotal,
-                Total = order.SubTotal + order.DeliveryMethod.Price,
+                Total = order.SubTotal + order.ShippingPrice,
                 PaymentStatus = order.PaymentStatus.ToString(),
                 PaymentIntentId= order.PaymentIntentId,
             };
