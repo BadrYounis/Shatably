@@ -6,7 +6,7 @@ using Shared;
 
 namespace Services
 {
-    public class BasketService(IBasketRepository _basketRepository) : IBasketService
+    public class BasketService(IBasketRepository _basketRepository, IProductService _productService) : IBasketService
     {
         public async Task<BasketDto?> GetBasketAsync(string username)
         {
@@ -17,8 +17,9 @@ namespace Services
         }
         public async Task<BasketDto?> UpdateBasketAsync(BasketDto basketDto)
         {
-            var basket = MapToEntity(basketDto);
+            var basket = await MapToEntityAsync(basketDto);
             var updated = await _basketRepository.UpdateBasketAsync(basket);
+
             return updated is null
                 ? throw new InvalidOperationException("Cannot update the basket now.")
                 : MapToDto(updated);
@@ -37,22 +38,38 @@ namespace Services
                 Price = item.Price,
                 Quantity = item.Quantity,
                 ImageUrl = item.ImageUrl,
+
             }).ToList()
         };
 
         // Manual Mapping: BasketDto -> Basket
-        private static Basket MapToEntity(BasketDto dto) => new Basket
+        private async Task<Basket> MapToEntityAsync(BasketDto dto)
         {
-            Username = dto.Username,
-            Items = dto.Items.Select(item => new BasketItem
-            {
-                ProductId = item.ProductId,
-                ProductName = item.ProductName,
-                Price = item.Price,
-                Quantity = item.Quantity,
-                ImageUrl = item.ImageUrl,
+            var items = new List<BasketItem>();
 
-            }).ToList()
-        };
+            foreach (var item in dto.Items)
+            {
+
+                var product = await _productService.GetByIdAsync(item.ProductId);
+                if (product == null)
+                    throw new NotFoundException($"Product with ID {item.ProductId} not found");
+
+                items.Add(new BasketItem
+                {
+                    ProductId = product.ProductId,
+                    ProductName = product.Name,
+                    Price = product.Price,
+                    Quantity = item.Quantity,
+                    ImageUrl = product.imageUrl
+                });
+            }
+
+            return new Basket
+            {
+                Username = dto.Username,
+                Items = items
+            };
+        }
+
     }
 }

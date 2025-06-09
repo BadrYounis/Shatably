@@ -10,6 +10,7 @@ namespace Shatably.API.Extensions
         public static IServiceCollection AddCoreServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IServiceManager, ServiceManager>();
+            services.AddScoped<IProductService, ProductService>();
             //Users
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserManager, UserManager>();
