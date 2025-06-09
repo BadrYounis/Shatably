@@ -11,5 +11,4 @@ public class CreateWorkerDto
     public int Experience { get; set; }
     public string ExperienceDisplay => $"{Experience} Year{(Experience == 1 ? "" : "s")}";
     public decimal Price { get; set; }
-    public List<RatingReviewDto> RatingReview { get; set; } = new();
 }

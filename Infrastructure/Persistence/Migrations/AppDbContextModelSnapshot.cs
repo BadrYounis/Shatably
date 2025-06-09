@@ -51,36 +51,6 @@ namespace Persistence.Migrations
                     b.ToTable("Clients");
                 });
 
-            modelBuilder.Entity("Domain.DesignTemplate", b =>
-                {
-                    b.Property<Guid>("templateId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("category")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("imageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("templateId");
-
-                    b.ToTable("DesignTemplates");
-                });
-
             modelBuilder.Entity("Domain.Entities.OrderEntities.DeliveryMethod", b =>
                 {
                     b.Property<Guid>("Id")
@@ -283,6 +253,9 @@ namespace Persistence.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("WorkerId")
                         .HasColumnType("uniqueidentifier");
 
@@ -291,6 +264,8 @@ namespace Persistence.Migrations
                     b.HasIndex("ClientId");
 
                     b.HasIndex("ProjectPortfolioId");
+
+                    b.HasIndex("ServiceId");
 
                     b.HasIndex("WorkerId");
 
@@ -307,6 +282,12 @@ namespace Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PortfolioId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServicesServiceId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -331,9 +312,46 @@ namespace Persistence.Migrations
 
                     b.HasIndex("PortfolioId");
 
+                    b.HasIndex("ServiceId");
+
+                    b.HasIndex("ServicesServiceId");
+
                     b.HasIndex("WorkerId");
 
                     b.ToTable("ServiceBookings", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.ServicesWork", b =>
+                {
+                    b.Property<Guid>("ServiceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("ServiceId");
+
+                    b.ToTable("ServicesWorks");
                 });
 
             modelBuilder.Entity("Domain.Worker", b =>
@@ -341,6 +359,9 @@ namespace Persistence.Migrations
                     b.Property<Guid>("workerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Acceptence")
+                        .HasColumnType("int");
 
                     b.Property<int>("Experience")
                         .HasColumnType("int");
@@ -524,6 +545,11 @@ namespace Persistence.Migrations
                         .HasForeignKey("ProjectPortfolioId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("Domain.ServicesWork", null)
+                        .WithMany("RatingReviews")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Domain.Worker", "Worker")
                         .WithMany("RatingReviews")
                         .HasForeignKey("WorkerId")
@@ -550,6 +576,18 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.ServicesWork", null)
+                        .WithMany("ServiceBookings")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.ServicesWork", "Services")
+                        .WithMany()
+                        .HasForeignKey("ServicesServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Worker", "Worker")
                         .WithMany("ServiceBookings")
                         .HasForeignKey("WorkerId")
@@ -559,6 +597,8 @@ namespace Persistence.Migrations
                     b.Navigation("Client");
 
                     b.Navigation("Portfolio");
+
+                    b.Navigation("Services");
 
                     b.Navigation("Worker");
                 });
@@ -586,6 +626,13 @@ namespace Persistence.Migrations
                 {
                     b.Navigation("Images");
 
+                    b.Navigation("RatingReviews");
+
+                    b.Navigation("ServiceBookings");
+                });
+
+            modelBuilder.Entity("Domain.ServicesWork", b =>
+                {
                     b.Navigation("RatingReviews");
 
                     b.Navigation("ServiceBookings");

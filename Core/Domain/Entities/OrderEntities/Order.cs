@@ -33,10 +33,7 @@ namespace Domain.Entities.OrderEntities
         public decimal SubTotal { get; set; } // orderItem.Price * orderItem.Quantity // Total ==> SubTotal + ShippingPrice
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
         public string PaymentIntentId { get; set; } 
-
         public Client Client { get; set; }
         public Guid ClientId { get; set; }
-
-
     }
 }

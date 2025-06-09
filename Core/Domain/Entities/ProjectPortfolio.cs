@@ -10,6 +10,4 @@ public class ProjectPortfolio
     public ICollection<ProjectImages> Images { get; set; } = new HashSet<ProjectImages>();
     public ICollection<RatingReview> RatingReviews { get; set; } = new HashSet<RatingReview>();
     public ICollection<ServiceBooking> ServiceBookings { get; set; } = new HashSet<ServiceBooking>();
-
-
 }

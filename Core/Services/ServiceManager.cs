@@ -18,7 +18,7 @@ namespace Services
         private readonly Lazy<IBasketService> _basketService;
         private readonly Lazy<IProjectPortfolioService> _projectPortfolioService;
         private readonly Lazy<IAuthService> _AuthService;
-        private readonly Lazy<IDesignTemplateService> _DesignTemplateService;
+        private readonly Lazy<IServicesWorkService> _ServicesWorkService;
         private readonly Lazy<IOrderService> _orderService;
         private readonly Lazy<IClientService> _clientService;
         private readonly Lazy<IWorkerService> _workerService;
@@ -37,7 +37,7 @@ namespace Services
 
             _AuthService = new Lazy<IAuthService>(() => new AuthService(_userManager, _options, _emailService, _httpContextAccessor, unitOfWork, _env));
 
-            _DesignTemplateService = new Lazy<IDesignTemplateService>(() => new DesignTemplateService(unitOfWork, configuration));
+            _ServicesWorkService = new Lazy<IServicesWorkService>(() => new ServicesWorkService(unitOfWork, configuration));
 
             _clientService = new Lazy<IClientService>(() => new ClientService(unitOfWork));
 
@@ -56,13 +56,12 @@ namespace Services
         public IBasketService BasketService => _basketService.Value;
         public IProjectPortfolioService ProjectPortfolioService => _projectPortfolioService.Value;
         public IAuthService AuthService => _AuthService.Value;
-        public IDesignTemplateService DesignTemplateService => _DesignTemplateService.Value;
+        public IServicesWorkService ServicesWorkService => _ServicesWorkService.Value;
         public IClientService ClientService => _clientService.Value;
         public IWorkerService WorkerService => _workerService.Value;
         public IOrderService OrderService => _orderService.Value;
         public IRatingReviewService RatingReviewService => _ratingReviewService.Value;
         public IPaymentService PaymentService => _paymentService.Value;
         public IImageService ImageService => _imageService.Value;
-
     }
 }
