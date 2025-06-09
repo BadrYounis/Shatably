@@ -202,12 +202,12 @@ namespace Services
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user is null)
-                return true;                  // الأفضل إرجاع true دائما لتجنب الكشف عن وجود البريد
+                return true;                  
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             var request = _httpContextAccessor.HttpContext!.Request;
-            var resetUrl = $"https://localhost:7242/ResetPassword.html?email={Uri.EscapeDataString(user.Email!)}&token={Uri.EscapeDataString(token)}";
+            var resetUrl = $"http://localhost:5173/newpass?email={Uri.EscapeDataString(user.Email!)}&token={Uri.EscapeDataString(token)}";
 
             var templatePath = Path.Combine(_env.ContentRootPath, "Templates", "Emails", "PasswordResetTemplate.html");
             var htmlTemplate = await System.IO.File.ReadAllTextAsync(templatePath);

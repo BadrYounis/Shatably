@@ -4,10 +4,6 @@ using Domain.Entities;
 using Persistence.Managers;
 using Services.Abstraction;
 using Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -23,7 +19,7 @@ namespace Services
             catch (Exception ex)
             {
                 Console.WriteLine($"[GetAllUsersAsync] Exception: {ex.Message}");
-                throw; // أو يمكنك هنا إرجاع قيمة افتراضية حسب المتطلبات
+                throw; 
             }
         }
         public async Task<UserDto?> GetUserByIdAsync(Guid id)
@@ -71,32 +67,57 @@ namespace Services
         }
         public async Task<UserDto?> UpdateUserAsync(UpdateUserDto dto)
         {
-            var user = await _userManager.GetUserByIdAsync(dto.Id);
-            if (user is null) return null;
-
-            user.UserName = dto.UserName;
-            user.Email = dto.Email;
-            user.FirstName = dto.FirstName;
-            user.LastName = dto.LastName;
-            user.IsActive = dto.IsActive;
-
-            if (dto.Address is not null)
+            try
             {
-                user.Address ??= new Address(); // لو Address = null نهيئه
+                var user = await _userManager.GetUserByIdAsync(dto.Id);
+                if (user is null) return null;
 
-                user.Address.city = dto.Address.city;
-                user.Address.region = dto.Address.region;
-                user.Address.street = dto.Address.street;
+                if (!string.IsNullOrWhiteSpace(dto.UserName))
+                    user.UserName = dto.UserName;
+
+                if (!string.IsNullOrWhiteSpace(dto.Email))
+                    user.Email = dto.Email;
+
+                if (!string.IsNullOrWhiteSpace(dto.FirstName))
+                    user.FirstName = dto.FirstName;
+
+                if (!string.IsNullOrWhiteSpace(dto.LastName))
+                    user.LastName = dto.LastName;
+
+                if (dto.IsActive.HasValue)
+                    user.IsActive = dto.IsActive.Value;
+
+                if (dto.Address is not null)
+                {
+                    user.Address ??= new Address();
+
+                    if (!string.IsNullOrWhiteSpace(dto.Address.city))
+                        user.Address.city = dto.Address.city;
+
+                    if (!string.IsNullOrWhiteSpace(dto.Address.region))
+                        user.Address.region = dto.Address.region;
+
+                    if (!string.IsNullOrWhiteSpace(dto.Address.street))
+                        user.Address.street = dto.Address.street;
+                }
+
+                if (!string.IsNullOrWhiteSpace(dto.ProfilePictureUrl))
+                    user.ProfilePictureUrl = dto.ProfilePictureUrl;
+
+                var result = await _userManager.UpdateAsync(user);
+                if (!result)
+                {
+                    Console.WriteLine("[UpdateUserAsync] Failed to update user.");
+                    return null;
+                }
+
+                return MapToUserDto(user);
             }
-
-            var result = await _userManager.UpdateAsync(user);
-            if (!result)
+            catch (Exception ex)
             {
-                Console.WriteLine("[UpdateUserAsync] Failed to update user.");
-                return null;
+                Console.WriteLine($"[UpdateUserAsync] Exception: {ex.Message}");
+                throw;
             }
-
-            return MapToUserDto(user);
         }
         public async Task<bool> DeleteUserAsync(Guid userId)
         {
@@ -152,8 +173,8 @@ namespace Services
         private UserDto MapToUserDto(User user) => new UserDto
         {
             Id = user.Id,
-            UserName = user.UserName!,
-            Email = user.Email!,
+            UserName = user.UserName??string.Empty,
+            Email = user.Email??string.Empty,
             FirstName = user.FirstName,
             LastName = user.LastName,
             IsActive = user.IsActive,
@@ -163,7 +184,8 @@ namespace Services
                 city = user.Address.city,
                 region = user.Address.region,
                 street = user.Address.street
-            } : null
+            } : null,
+            ProfilePictureUrl = user.ProfilePictureUrl
         };
     }
 }

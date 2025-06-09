@@ -10,7 +10,7 @@ namespace Presentation
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController(IUserService _userService) : ControllerBase
+    public class UsersController(IUserService _userService, IServiceManager _serviceManager) : ControllerBase
     {
         // GET: api/Users
         [HttpGet]
@@ -25,8 +25,8 @@ namespace Presentation
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[GetAll] Exception: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while retrieving users." });
+                Console.WriteLine($"[GetAll] Exception: {ex.Message} - {ex.StackTrace}");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
 
@@ -79,10 +79,19 @@ namespace Presentation
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserDto dto)
+        public async Task<IActionResult> UpdateUser(
+            Guid id,
+            [FromForm] UpdateUserDto dto,
+            IFormFile ImageUrl)
         {
             if (id != dto.Id)
                 return BadRequest("ID mismatch");
+
+            if (ImageUrl is not null)
+            {
+                var mainImagePath = await _serviceManager.ImageService.UploadImageAsync(ImageUrl, "UsersImages");
+                dto.ProfilePictureUrl = $"{Request.Scheme}://{Request.Host}{mainImagePath}";
+            }
 
             var updatedUser = await _userService.UpdateUserAsync(dto);
             if (updatedUser is null)
