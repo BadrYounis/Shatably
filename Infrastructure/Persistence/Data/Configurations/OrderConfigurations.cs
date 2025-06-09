@@ -20,10 +20,10 @@ namespace Persistance.Data.Configurations
             // علشان لو غيرت في السترينج اللي مكتوب في ال enum [يعني كتبت paymentsucceed بدل paymnetreceived]
             builder.Property(o => o.PaymentStatus).HasConversion(paymentstauts => paymentstauts.ToString(),  //  --> means paymentStatus will be stored as string in database
               s=> Enum.Parse<OrderPaymentStatus>(s)); //--> the type of returned value [Enum]
-
-            
-           
+                     
             builder.Property(o => o.SubTotal).HasColumnType("decimal(18,3)");
+
+            builder.Property(o => o.ShippingPrice).HasColumnType("decimal(18,3)");
             
         }
     }

@@ -51,32 +51,6 @@ namespace Persistence.Migrations
                     b.ToTable("Clients", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.OrderEntities.DeliveryMethod", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DeliveryTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<string>("ShortName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeliveryMethods", (string)null);
-                });
-
             modelBuilder.Entity("Domain.Entities.OrderEntities.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -84,9 +58,6 @@ namespace Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("DeliveryMethodId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("OrderDate")
@@ -99,6 +70,9 @@ namespace Persistence.Migrations
                     b.Property<string>("PaymentStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("ShippingPrice")
+                        .HasColumnType("decimal(18,3)");
 
                     b.Property<decimal>("SubTotal")
                         .HasColumnType("decimal(18,3)");
@@ -113,8 +87,6 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("DeliveryMethodId");
 
                     b.HasIndex("workerId");
 
@@ -439,11 +411,6 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.OrderEntities.DeliveryMethod", "DeliveryMethod")
-                        .WithMany("Orders")
-                        .HasForeignKey("DeliveryMethodId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Domain.Worker", null)
                         .WithMany("Orders")
                         .HasForeignKey("workerId");
@@ -474,8 +441,6 @@ namespace Persistence.Migrations
                         });
 
                     b.Navigation("Client");
-
-                    b.Navigation("DeliveryMethod");
 
                     b.Navigation("ShippingAddress")
                         .IsRequired();
@@ -598,11 +563,6 @@ namespace Persistence.Migrations
                     b.Navigation("RatingReviews");
 
                     b.Navigation("ServiceBookings");
-                });
-
-            modelBuilder.Entity("Domain.Entities.OrderEntities.DeliveryMethod", b =>
-                {
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderEntities.Order", b =>

@@ -1,7 +1,6 @@
 ﻿using Domain;
 using Domain.Contracts;
 using Domain.Exceptions;
-using Microsoft.Extensions.Configuration;
 using Services.Abstraction;
 using Services.Specifications;
 using Shared;
@@ -21,8 +20,8 @@ namespace Services
         }
         public async Task<PaginatedResult<ProductDto>> GetAllAsync(ProductSpecificationsParameters parameters)
         {
-              var products = await _productRepository.Value.GetAllAsync(new ProductWithCategorySpecifications(parameters));
-           // var products = await _unitOfWork.GetRepository<Product, int>().GetAllAsync(new ProductWithCategorySpecifications(parameters));
+            var products = await _productRepository.Value.GetAllAsync(new ProductWithCategorySpecifications(parameters));
+            // var products = await _unitOfWork.GetRepository<Product, int>().GetAllAsync(new ProductWithCategorySpecifications(parameters));
             var totalCount = await _unitOfWork.GetRepository<Product, Guid>().CountAsync(new ProductCountSpecifications(parameters));
             var productResult = products.Select(MapToDto);
             var result = new PaginatedResult<ProductDto>(
@@ -37,7 +36,6 @@ namespace Services
         {
             var product = await _productRepository.Value.GetByIdAsync(new ProductWithCategorySpecifications(productId));
             return product is null ? throw new ProductNotFoundException(productId) : MapToDto(product);
-
         }
         public async Task<IEnumerable<ProductDto>> GetByCategoryAsync(string category)
         {
@@ -53,7 +51,7 @@ namespace Services
                 category = dto.Category,
                 price = dto.Price,
                 stockAmount = dto.StockAmount,
-                imageUrl = dto.imageUrl,     
+                imageUrl = dto.ImageUrl ?? string.Empty,
                 isPackage = dto.isPackage
             };
             await _productRepository.Value.AddAsync(product);
@@ -69,7 +67,8 @@ namespace Services
             product.category = dto.Category;
             product.price = dto.Price;
             product.stockAmount = dto.StockAmount;
-            product.imageUrl = dto.imageUrl;
+            if (!string.IsNullOrWhiteSpace(dto.ImageUrl))
+                product.imageUrl = dto.ImageUrl;
             product.isPackage = dto.isPackage;
             _productRepository.Value.Update(product);
             await _unitOfWork.SaveChangesAsync();
@@ -90,7 +89,9 @@ namespace Services
             Category = product.category,
             Price = product.price,
             StockAmount = product.stockAmount,
-            imageUrl = product.imageUrl,       
+            imageUrl = string.IsNullOrEmpty(product.imageUrl)
+                ? string.Empty
+                : $"{product.imageUrl}",
             isPackage = product.isPackage
         };
 

@@ -45,10 +45,19 @@ namespace Presentation
 
         // POST: api/products
         [HttpPost]
+        [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateProductDto dto)
+        public async Task<IActionResult> Create(
+            [FromForm] CreateProductDto dto,
+            IFormFile? imageUrl)
         {
+            if (imageUrl is not null)
+            {
+                var mainImagePath = await _serviceManager.ImageService.UploadImageAsync(imageUrl, "ProductsImages");
+                dto.ImageUrl = $"{Request.Scheme}://{Request.Host}{mainImagePath}";
+            }
+
             var id = await _serviceManager.ProductService.CreateAsync(dto);
             var created = await _serviceManager.ProductService.GetByIdAsync(id);
             return CreatedAtAction(nameof(GetById), new { id }, new
@@ -60,11 +69,20 @@ namespace Presentation
 
         // PUT: api/products/{id}
         [HttpPut("{id}")]
+        [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductDto dto)
+        public async Task<IActionResult> Update(
+            Guid id,
+            [FromForm] UpdateProductDto dto,
+            IFormFile? imageUrl)
         {
+            if (imageUrl is not null)
+            {
+                var mainImagePath = await _serviceManager.ImageService.UploadImageAsync(imageUrl, "ProductsImages");
+                dto.ImageUrl = $"{Request.Scheme}://{Request.Host}{mainImagePath}";
+            }
             await _serviceManager.ProductService.UpdateAsync(id, dto);
             return NoContent();
         }
