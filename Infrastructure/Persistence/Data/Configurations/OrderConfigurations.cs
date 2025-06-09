@@ -21,10 +21,7 @@ namespace Persistance.Data.Configurations
             builder.Property(o => o.PaymentStatus).HasConversion(paymentstauts => paymentstauts.ToString(),  //  --> means paymentStatus will be stored as string in database
               s=> Enum.Parse<OrderPaymentStatus>(s)); //--> the type of returned value [Enum]
 
-            builder.HasOne(o => o.DeliveryMethod)
-                .WithMany(dm=>dm.Orders)
-                .HasForeignKey(o => o.DeliveryMethodId)
-                .OnDelete(DeleteBehavior.SetNull);
+            
            
             builder.Property(o => o.SubTotal).HasColumnType("decimal(18,3)");
             

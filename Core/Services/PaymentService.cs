@@ -58,15 +58,17 @@ namespace Services
 
             }
 
-            // 4] Get delivery method and its shipping price
-            //check if the delivery method is selected or not
-            if (!basket.DeliveryMethodId.HasValue) throw new Exception("no delivery method was selected");
-            // retrive delivery method from db
-            var deliveryMethod = await _unitOfWork.GetRepository<DeliveryMethod, Guid>().GetByIdAsync(basket.DeliveryMethodId.Value) ?? throw new DeliveryMethodNotFoundException(basket.DeliveryMethodId.Value);
+            //// 4] Get delivery method and its shipping price
+            ////check if the delivery method is selected or not
+            //if (!basket.DeliveryMethodId.HasValue) throw new Exception("no delivery method was selected");
+            //// retrive delivery method from db
+            //var deliveryMethod = await _unitOfWork.GetRepository<DeliveryMethod, Guid>().GetByIdAsync(basket.DeliveryMethodId.Value) ?? throw new DeliveryMethodNotFoundException(basket.DeliveryMethodId.Value);
 
-            // 5] retrive deliverymethod from data base and assign price of basket [shipping address]= deliveryMethod.shippingPrice
-            // basket.shippingPrice = actual price from data base
-            basket.ShippingPrice = deliveryMethod.Price;
+            //// 5] retrive deliverymethod from data base and assign price of basket [shipping address]= deliveryMethod.shippingPrice
+            //// basket.shippingPrice = actual price from data base
+            //basket.ShippingPrice = deliveryMethod.Price;
+
+            basket.ShippingPrice = 50;
 
             // 6] total = subtotal + shippingPrice ==> [(item.price)*(item.quantity)]+basket.shippingPrice  =====> long
             // long ==> dollar ==> cent

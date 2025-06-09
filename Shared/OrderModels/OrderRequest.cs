@@ -10,6 +10,6 @@ namespace Shared.OrderModels
     {
         public string BasketId { get; init; }
         public AddressDto ShippingAddress { get; init; }
-        public Guid DeliveryMethodId { get; init; }
+       // public Guid DeliveryMethodId { get; init; }
     }
 }

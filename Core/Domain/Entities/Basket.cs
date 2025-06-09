@@ -7,8 +7,7 @@ public class Basket
     // Payment Module
     public string? PaymentIntentId { get; set; }
     public string? ClientSecret { get; set; }
-    public decimal? ShippingPrice { get; set; }
-    public Guid? DeliveryMethodId { get; set; }
+    public decimal ShippingPrice { get; set; } = 50;
 }
 public class BasketItem
 {
