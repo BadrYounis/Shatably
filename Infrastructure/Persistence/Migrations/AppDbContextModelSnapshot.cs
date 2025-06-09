@@ -253,7 +253,7 @@ namespace Persistence.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("ServiceId")
+                    b.Property<Guid?>("ServicesWorkServiceId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("WorkerId")
@@ -265,7 +265,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ProjectPortfolioId");
 
-                    b.HasIndex("ServiceId");
+                    b.HasIndex("ServicesWorkServiceId");
 
                     b.HasIndex("WorkerId");
 
@@ -285,9 +285,6 @@ namespace Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ServiceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ServicesServiceId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -313,8 +310,6 @@ namespace Persistence.Migrations
                     b.HasIndex("PortfolioId");
 
                     b.HasIndex("ServiceId");
-
-                    b.HasIndex("ServicesServiceId");
 
                     b.HasIndex("WorkerId");
 
@@ -547,8 +542,7 @@ namespace Persistence.Migrations
 
                     b.HasOne("Domain.ServicesWork", null)
                         .WithMany("RatingReviews")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("ServicesWorkServiceId");
 
                     b.HasOne("Domain.Worker", "Worker")
                         .WithMany("RatingReviews")
@@ -576,16 +570,10 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.ServicesWork", null)
+                    b.HasOne("Domain.ServicesWork", "Services")
                         .WithMany("ServiceBookings")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Domain.ServicesWork", "Services")
-                        .WithMany()
-                        .HasForeignKey("ServicesServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Worker", "Worker")
