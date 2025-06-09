@@ -27,11 +27,11 @@ namespace Services
         private readonly Lazy<IImageService> _imageService;
         public ServiceManager(IUnitOfWork unitOfWork, IBasketRepository _basketRepository, UserManager<User> _userManager,
             IOptions<JwtOptions> _options, AppDbContext _context, IEmailService _emailService
-            , IHttpContextAccessor _httpContextAccessor, LinkGenerator _linkGenerator, IConfiguration configuration, IWebHostEnvironment _env)
+            , IHttpContextAccessor _httpContextAccessor, LinkGenerator _linkGenerator, IConfiguration configuration, IWebHostEnvironment _env, IProductService _productsService)
         {
             _productService = new Lazy<IProductService>(() => new ProductService(unitOfWork));
 
-            _basketService = new Lazy<IBasketService>(() => new BasketService(_basketRepository));
+            _basketService = new Lazy<IBasketService>(() => new BasketService(_basketRepository, _productsService));
 
             _projectPortfolioService = new Lazy<IProjectPortfolioService>(() => new ProjectPortfolioService(unitOfWork, configuration));
 
