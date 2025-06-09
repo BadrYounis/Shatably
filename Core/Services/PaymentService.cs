@@ -55,7 +55,7 @@ namespace Services
                    ?? throw new ProductNotFoundException(item.ProductId);
                 //update item.price in the basket [data from product table in data base]
                 item.Price = product.price;
-
+                item.ImageUrl = product.imageUrl;
             }
 
             //// 4] Get delivery method and its shipping price
@@ -126,6 +126,7 @@ namespace Services
                 ProductName = item.ProductName,
                 Price = item.Price,
                 Quantity = item.Quantity,
+                ImageUrl = item.ImageUrl
             }).ToList()
         };
 
