@@ -41,6 +41,11 @@ public class ServiceBookingConfiguration: IEntityTypeConfiguration<ServiceBookin
                .HasForeignKey(sb => sb.PortfolioId)
                .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasOne(sb => sb.Services)
+               .WithMany(s => s.ServiceBookings)
+               .HasForeignKey(sb => sb.ServiceId)
+               .OnDelete(DeleteBehavior.NoAction);
+
         // Table name 
         builder.ToTable("ServiceBookings");
     }

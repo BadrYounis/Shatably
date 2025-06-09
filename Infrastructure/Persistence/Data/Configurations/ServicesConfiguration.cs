@@ -31,15 +31,10 @@ namespace Persistence.Data
 
             // Relationships
 
-            builder.HasMany(s => s.RatingReviews)
-                .WithOne()
-                .HasForeignKey("ServiceId") // assuming there's a foreign key in RatingReview
-                .OnDelete(DeleteBehavior.NoAction);
-
             builder.HasMany(s => s.ServiceBookings)
-                .WithOne()
-                .HasForeignKey("ServiceId") // assuming there's a foreign key in ServiceBooking
-                .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(sb => sb.Services) 
+                .HasForeignKey(sb => sb.ServiceId)
+                .OnDelete(DeleteBehavior.NoAction);           
         }
     }
 }
