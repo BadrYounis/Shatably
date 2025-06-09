@@ -18,7 +18,7 @@ namespace Domain.Entities.OrderEntities
             this.orderItems = orderItems;
             SubTotal = subTotal;
             PaymentIntentId = paymentIntentId;
-            ShippingPrice = 50;
+            ShippingPrice = 50m;
         }
 
         public Guid Id { get; set; }
@@ -28,7 +28,7 @@ namespace Domain.Entities.OrderEntities
         public ICollection<OrderItem> orderItems { get; set; } = new List<OrderItem>();
         public OrderPaymentStatus PaymentStatus { get; set; } = OrderPaymentStatus.Pending;
         public decimal SubTotal { get; set; } // orderItem.Price * orderItem.Quantity // Total ==> SubTotal + ShippingPrice
-        public decimal ShippingPrice { get; set; } = 50;
+        public decimal ShippingPrice { get; set; } = 50m;
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
         public string PaymentIntentId { get; set; } 
         public Client Client { get; set; }

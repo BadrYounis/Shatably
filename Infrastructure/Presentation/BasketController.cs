@@ -27,10 +27,11 @@ namespace Presentation
         [HttpPost]
         [ProducesResponseType(typeof(BasketDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateBasket([FromBody] BasketDto basketDto)
+        public async Task<IActionResult> UpdateBasket(
+            [FromForm] BasketDto basketDto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(ModelState);          
 
             var updatedBasket = await _serviceManager.BasketService.UpdateBasketAsync(basketDto);
 

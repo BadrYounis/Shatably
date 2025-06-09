@@ -125,7 +125,7 @@ namespace Services
                 ProductId = item.ProductId,
                 ProductName = item.ProductName,
                 Price = item.Price,
-                Quantity = item.Quantity
+                Quantity = item.Quantity,
             }).ToList()
         };
 
