@@ -12,7 +12,7 @@ public class WorkerDto
     public int Experience { get; set; }
     public string ExperienceDisplay => $"{Experience} Year{(Experience == 1 ? "" : "s")}";
     public decimal Price { get; set; }
-    public ICollection<RatingReviewDto> RatingReview { get; set; }=new List<RatingReviewDto>();
-   
+    public ICollection<RatingReviewDto> RatingReview { get; set; } = new List<RatingReviewDto>();
+
 }
 

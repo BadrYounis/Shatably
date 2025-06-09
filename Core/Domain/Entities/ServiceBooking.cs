@@ -11,4 +11,6 @@ public class ServiceBooking
     public Guid WorkerId { get; set; }
     public ProjectPortfolio Portfolio { get; set; }
     public Guid PortfolioId { get; set; }
+    public ServicesWork Services { get; set; }
+    public Guid ServiceId { get; set; }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
-    public class DesignTemplateNotFoundException : NotFoundException
+    public class ServicesWorkNotFoundException : NotFoundException
     {
-        public DesignTemplateNotFoundException(Guid id) : base($"Design With Id: {id} Not Found")
+        public ServicesWorkNotFoundException(Guid id) : base($"Service With Id: {id} Not Found")
         {
 
         }

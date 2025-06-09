@@ -12,19 +12,16 @@ public class WorkerService : IWorkerService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly Lazy<IGenericRepository<Worker, Guid>> _workerRepository;
-    private readonly string? _imageBaseUrl;
     public WorkerService(IUnitOfWork unitOfWork,IConfiguration configuration)
     {
         _unitOfWork = unitOfWork;
         _workerRepository = new Lazy<IGenericRepository<Worker, Guid>>(
                 () => _unitOfWork.GetRepository<Worker, Guid>());
-        _imageBaseUrl = configuration["BaseUrls:ImageBaseUrl"];
-
     }
     public async Task<IEnumerable<WorkerDto>> GetAllAsync()
     {
         var workers = await _workerRepository.Value.GetAllAsync(new WorkerWithRatingReviewSpecifications());
-       var workerResult= workers.Select(ToDto);
+        var workerResult= workers.Select(ToDto);
         return workerResult;
     }
     public async Task<WorkerDto?> GetByIdAsync(Guid id)
@@ -117,9 +114,11 @@ public class WorkerService : IWorkerService
             RatingReview = (worker.RatingReviews != null && worker.RatingReviews.Any())
                          ? worker.RatingReviews.Select(r => new RatingReviewDto
                          {
+                             ClientId = r.ClientId,
                              Rating = r.Rating,
                              Comment = r.Comment ?? string.Empty,
-                             CreatedAt = r.CreatedAt
+                             CreatedAt = r.CreatedAt,
+                             ReviewId = r.ReviewId
                          }).ToList()
                          : new List<RatingReviewDto>()
         };

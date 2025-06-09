@@ -3,19 +3,12 @@ using Domain.Contracts;
 using Domain.Entities.OrderEntities;
 using Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
-using Org.BouncyCastle.Crypto;
-using Persistence.Repositories;
 using Services.Abstraction;
 using Services.Specification;
 using Shared;
 using Stripe;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Product = Domain.Product;
 using Order = Domain.Entities.OrderEntities.Order;
+using Product = Domain.Product;
 
 
 namespace Services
