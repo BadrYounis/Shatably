@@ -48,7 +48,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("ClientId");
 
-                    b.ToTable("Clients", (string)null);
+                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderEntities.Order", b =>
@@ -90,7 +90,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("workerId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderEntities.OrderItem", b =>
@@ -112,7 +112,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Domain.Product", b =>
@@ -146,7 +146,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("productId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Domain.ProjectImages", b =>
@@ -166,7 +166,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectImages", (string)null);
+                    b.ToTable("ProjectImages");
                 });
 
             modelBuilder.Entity("Domain.ProjectPortfolio", b =>
@@ -200,7 +200,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("projectId");
 
-                    b.ToTable("ProjectPortfolios", (string)null);
+                    b.ToTable("ProjectPortfolios");
                 });
 
             modelBuilder.Entity("Domain.RatingReview", b =>
@@ -241,51 +241,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("WorkerId");
 
-                    b.ToTable("RatingReviews", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.ServiceBooking", b =>
-                {
-                    b.Property<Guid>("bookingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PortfolioId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ServiceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("TimeSlot")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<Guid>("WorkerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("bookingDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("bookingId");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("PortfolioId");
-
-                    b.HasIndex("ServiceId");
-
-                    b.HasIndex("WorkerId");
-
-                    b.ToTable("ServiceBookings", (string)null);
+                    b.ToTable("RatingReviews");
                 });
 
             modelBuilder.Entity("Domain.ServicesWork", b =>
@@ -318,7 +274,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("ServiceId");
 
-                    b.ToTable("ServicesWorks", (string)null);
+                    b.ToTable("ServicesWorks");
                 });
 
             modelBuilder.Entity("Domain.Worker", b =>
@@ -364,12 +320,88 @@ namespace Persistence.Migrations
 
                     b.HasKey("workerId");
 
-                    b.ToTable("Workers", (string)null);
+                    b.ToTable("Workers");
+                });
+
+            modelBuilder.Entity("ServiceBooking", b =>
+                {
+                    b.Property<Guid>("BookingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ClientSecret")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<string>("PaymentIntentId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<Guid?>("PortfolioId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TimeSlot")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<Guid?>("WorkerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BookingId");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("PortfolioId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("ServiceBookings", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Client", b =>
                 {
-                    b.OwnsOne("Domain.Client.Address#Domain.Address", "Address", b1 =>
+                    b.OwnsOne("Domain.Address", "Address", b1 =>
                         {
                             b1.Property<Guid>("ClientId")
                                 .HasColumnType("uniqueidentifier");
@@ -394,7 +426,7 @@ namespace Persistence.Migrations
 
                             b1.HasKey("ClientId");
 
-                            b1.ToTable("Clients", (string)null);
+                            b1.ToTable("Clients");
 
                             b1.WithOwner()
                                 .HasForeignKey("ClientId");
@@ -415,7 +447,7 @@ namespace Persistence.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("workerId");
 
-                    b.OwnsOne("Domain.Entities.OrderEntities.Order.ShippingAddress#Domain.Address", "ShippingAddress", b1 =>
+                    b.OwnsOne("Domain.Address", "ShippingAddress", b1 =>
                         {
                             b1.Property<Guid>("OrderId")
                                 .HasColumnType("uniqueidentifier");
@@ -434,7 +466,7 @@ namespace Persistence.Migrations
 
                             b1.HasKey("OrderId");
 
-                            b1.ToTable("Orders", (string)null);
+                            b1.ToTable("Orders");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");
@@ -453,7 +485,7 @@ namespace Persistence.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.OwnsOne("Domain.Entities.OrderEntities.OrderItem.Product#Domain.Entities.OrderEntities.ProductInOrderItem", "Product", b1 =>
+                    b.OwnsOne("Domain.Entities.OrderEntities.ProductInOrderItem", "Product", b1 =>
                         {
                             b1.Property<Guid>("OrderItemId")
                                 .HasColumnType("uniqueidentifier");
@@ -471,7 +503,7 @@ namespace Persistence.Migrations
 
                             b1.HasKey("OrderItemId");
 
-                            b1.ToTable("OrderItems", (string)null);
+                            b1.ToTable("OrderItems");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderItemId");
@@ -521,31 +553,27 @@ namespace Persistence.Migrations
                     b.Navigation("Worker");
                 });
 
-            modelBuilder.Entity("Domain.ServiceBooking", b =>
+            modelBuilder.Entity("ServiceBooking", b =>
                 {
                     b.HasOne("Domain.Client", "Client")
                         .WithMany("ServiceBookings")
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Domain.ProjectPortfolio", "Portfolio")
                         .WithMany("ServiceBookings")
                         .HasForeignKey("PortfolioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Domain.ServicesWork", "Services")
                         .WithMany("ServiceBookings")
                         .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Domain.Worker", "Worker")
                         .WithMany("ServiceBookings")
                         .HasForeignKey("WorkerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Client");
 

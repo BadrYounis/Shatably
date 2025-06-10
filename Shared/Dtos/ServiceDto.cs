@@ -10,6 +10,5 @@
         public decimal Price { get; set; }
         public double AverageRating { get; set; }
         public int ReviewCount { get; set; }
-        public ICollection<RatingReviewDto> RatingReview { get; set; } = new List<RatingReviewDto>();
     }
 }

@@ -2,6 +2,7 @@
 using Services;
 using Shared;
 using Persistence.Managers;
+using Domain;
 
 namespace Shatably.API.Extensions
 {
@@ -11,6 +12,9 @@ namespace Shatably.API.Extensions
         {
             services.AddScoped<IServiceManager, ServiceManager>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IWorkerService, WorkerService>();
+            services.AddScoped<IProjectPortfolioService, ProjectPortfolioService>();
+            services.AddScoped<IServicesWorkService, ServicesWorkService>();
             //Users
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserManager, UserManager>();
