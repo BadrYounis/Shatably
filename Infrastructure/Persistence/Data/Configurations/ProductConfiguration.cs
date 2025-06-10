@@ -14,26 +14,12 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .ValueGeneratedOnAdd();
 
         builder.Property(p => p.name)
-            .IsRequired()
             .HasMaxLength(100);
 
         builder.Property(p => p.category)
-            .IsRequired()
             .HasMaxLength(50);
 
         builder.Property(p => p.price)
-            .HasColumnType("decimal(18,2)")
-            .IsRequired();
-
-        builder.Property(p => p.stockAmount)
-            .IsRequired();
-
-        builder.Property(p => p.isPackage)
-            .IsRequired();
-
-        //builder.HasMany(p => p.OrderItems)
-        //    .WithOne(oi => oi.Product)
-        //    .HasForeignKey(oi => oi.ProductId)
-        //    .OnDelete(DeleteBehavior.Cascade);
+            .HasColumnType("decimal(18,2)");
     }
 }

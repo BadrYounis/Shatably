@@ -29,7 +29,7 @@ namespace Services
             var service = await _ServicesRepository.Value.GetByIdAsync(new ServiceWithRatingReviewSpecifications(serviceId));
             return service is null ? throw new ServicesWorkNotFoundException(serviceId) : MapToDto(service);
         }
-        public async Task<Guid> CreateAsync(CreateServicesDto dto)
+        public async Task<ServiceDto> CreateAsync(CreateServicesDto dto)
         {
             var service = new ServicesWork
             {
@@ -38,12 +38,24 @@ namespace Services
                 Details = dto.Details,
                 Description = dto.Description,
                 ImageUrl = dto.ImageUrl!,
-                Price = dto.Price
+                Price = dto.Price,
+                AverageRating = dto.AverageRating,
+                ReviewCount = dto.ReviewCount
             };
             await _ServicesRepository.Value.AddAsync(service);
             await _unitOfWork.SaveChangesAsync();
 
-            return service.ServiceId;
+            return new ServiceDto
+            {
+                ServiceId = service.ServiceId,
+                Name = service.Name,
+                Details = service.Details,
+                Description = service.Description,
+                ImageUrl = service.ImageUrl,
+                Price = service.Price,
+                AverageRating = dto.AverageRating,
+                ReviewCount = dto.ReviewCount
+            };
         }
         public async Task UpdateAsync(Guid serviceId, UpdateServiceDto dto)
         {
@@ -77,10 +89,12 @@ namespace Services
             Description = service.Description,
             ImageUrl = string.IsNullOrEmpty(service.ImageUrl) ? string.Empty : service.ImageUrl,
             Price = service.Price,
-            AverageRating = service.RatingReviews.Any()
-                ? service.RatingReviews.Average(r => r.Rating)
-                : 0,
-            ReviewCount = service.RatingReviews.Count,           
+            AverageRating = service.AverageRating,
+            ReviewCount = service.ReviewCount
+            //AverageRating = service.RatingReviews.Any()
+            //    ? service.RatingReviews.Average(r => r.Rating)
+            //    : 0,
+            //ReviewCount = service.RatingReviews.Count,           
         };
     }
 }
