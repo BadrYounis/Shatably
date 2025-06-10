@@ -7,46 +7,73 @@ public class ServiceBookingConfiguration: IEntityTypeConfiguration<ServiceBookin
 {
     public void Configure(EntityTypeBuilder<ServiceBooking> builder)
     {
-        // Primary Key
-        builder.HasKey(sb => sb.bookingId);
+        // Table name
+        builder.ToTable("ServiceBookings");
 
-        // Properties
-        builder.Property(sb => sb.bookingId)
-               .IsRequired();
+        builder.HasKey(sb => sb.BookingId);
 
-        builder.Property(sb => sb.bookingDate)
+        builder.Property(sb => sb.BookingId)
                .IsRequired();
 
         builder.Property(sb => sb.Status)
-               .IsRequired()
-               .HasMaxLength(50); 
+               .HasMaxLength(50);
 
         builder.Property(sb => sb.TimeSlot)
-               .IsRequired()
-               .HasMaxLength(50); 
+               .HasMaxLength(50);
+
+        builder.Property(sb => sb.TotalPrice)
+               .HasColumnType("decimal(18,3)");
+
+        builder.Property(sb => sb.PaymentStatus)
+               .HasConversion<string>()
+               .HasMaxLength(20)
+               .IsRequired();
+
+        builder.Property(sb => sb.ClientId).IsRequired(false);
+
+        builder.Property(sb => sb.WorkerId).IsRequired(false); // مهم
+
+        builder.Property(sb => sb.PortfolioId).IsRequired(false); // مهم
+
+        builder.Property(sb => sb.ServiceId).IsRequired(false);
+
+        builder.Property(sb => sb.PaymentIntentId)
+               .HasMaxLength(100);
+
+        builder.Property(sb => sb.ClientSecret)
+               .HasMaxLength(255);
+
+        builder.Property(sb => sb.Address)
+               .HasMaxLength(250);
+
+        builder.Property(sb => sb.Description)
+               .HasMaxLength(500);
+
+        builder.Property(sb => sb.Latitude)
+               .HasColumnType("float"); 
+
+        builder.Property(sb => sb.Longitude)
+               .HasColumnType("float");
 
         // Relationships
         builder.HasOne(sb => sb.Client)
-               .WithMany(c=>c.ServiceBookings) 
-               .HasForeignKey(sb => sb.ClientId)
-               .OnDelete(DeleteBehavior.Cascade); 
+       .WithMany(c => c.ServiceBookings)
+       .HasForeignKey(sb => sb.ClientId)
+       .OnDelete(DeleteBehavior.NoAction); // ClientId is optional
 
         builder.HasOne(sb => sb.Worker)
-               .WithMany(w=>w.ServiceBookings) 
+               .WithMany(w => w.ServiceBookings)
                .HasForeignKey(sb => sb.WorkerId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.NoAction); // WorkerId is optional
 
         builder.HasOne(sb => sb.Portfolio)
-               .WithMany(w => w.ServiceBookings)
+               .WithMany(p => p.ServiceBookings)
                .HasForeignKey(sb => sb.PortfolioId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.NoAction); // PortfolioId is optional
 
         builder.HasOne(sb => sb.Services)
                .WithMany(s => s.ServiceBookings)
                .HasForeignKey(sb => sb.ServiceId)
-               .OnDelete(DeleteBehavior.NoAction);
-
-        // Table name 
-        builder.ToTable("ServiceBookings");
+               .OnDelete(DeleteBehavior.NoAction); // ServiceId is optional
     }
 }

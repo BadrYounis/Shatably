@@ -25,9 +25,15 @@ namespace Services
         private readonly Lazy<IRatingReviewService> _ratingReviewService;
         private readonly Lazy<IPaymentService> _paymentService;
         private readonly Lazy<IImageService> _imageService;
+        private readonly Lazy<IBookingService> _bookingService;
+        private readonly Lazy<IBookingPaymentService> _bookingPaymentService;
+
         public ServiceManager(IUnitOfWork unitOfWork, IBasketRepository _basketRepository, UserManager<User> _userManager,
             IOptions<JwtOptions> _options, AppDbContext _context, IEmailService _emailService
-            , IHttpContextAccessor _httpContextAccessor, LinkGenerator _linkGenerator, IConfiguration configuration, IWebHostEnvironment _env, IProductService _productsService)
+            , IHttpContextAccessor _httpContextAccessor, LinkGenerator _linkGenerator, IConfiguration configuration,
+            IWebHostEnvironment _env, IProductService _productsService, IWorkerService workerService, IProjectPortfolioService projectPortfolioService,
+            IServicesWorkService servicesWorkService
+            )
         {
             _productService = new Lazy<IProductService>(() => new ProductService(unitOfWork));
 
@@ -51,6 +57,9 @@ namespace Services
 
             _imageService = new Lazy<IImageService>(() => new ImageService(_env));
 
+            _bookingService = new Lazy<IBookingService>(() => new BookingService(unitOfWork, configuration, servicesWorkService, projectPortfolioService, workerService));
+
+            _bookingPaymentService = new Lazy<IBookingPaymentService>(() => new BookingPaymentService(unitOfWork, configuration));
         }
         public IProductService ProductService => _productService.Value;
         public IBasketService BasketService => _basketService.Value;
@@ -63,5 +72,7 @@ namespace Services
         public IRatingReviewService RatingReviewService => _ratingReviewService.Value;
         public IPaymentService PaymentService => _paymentService.Value;
         public IImageService ImageService => _imageService.Value;
+        public IBookingService BookingService => _bookingService.Value;
+        public IBookingPaymentService BookingPaymentService => _bookingPaymentService.Value;
     }
 }

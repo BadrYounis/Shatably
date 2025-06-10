@@ -80,17 +80,7 @@ namespace Services
             AverageRating = service.RatingReviews.Any()
                 ? service.RatingReviews.Average(r => r.Rating)
                 : 0,
-            ReviewCount = service.RatingReviews.Count,
-            RatingReview = (service.RatingReviews != null && service.RatingReviews.Any())
-                         ? service.RatingReviews.Select(r => new RatingReviewDto
-                         {
-                             ClientId = r.ClientId,
-                             Rating = r.Rating,
-                             Comment = r.Comment ?? string.Empty,
-                             CreatedAt = r.CreatedAt,
-                             ReviewId = r.ReviewId
-                         }).ToList()
-                         : new List<RatingReviewDto>()
+            ReviewCount = service.RatingReviews.Count,           
         };
     }
 }

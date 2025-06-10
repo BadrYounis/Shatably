@@ -59,9 +59,13 @@ namespace E_Commerce.API.Middlewares
 
             httpContext.Response.ContentType = "application/json";
 
+            var errorMessage = ex.InnerException?.Message ?? ex.Message;
+
+            _logger.LogError($"Something Went Wrong: {errorMessage}");
+
             var response = new ErrorDetails
             {
-                ErrorMessage = ex.Message
+                ErrorMessage = errorMessage
             };
 
             httpContext.Response.StatusCode = ex switch

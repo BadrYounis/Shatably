@@ -13,6 +13,8 @@
         public IRatingReviewService RatingReviewService { get; }
         public IPaymentService PaymentService { get; }
         public IImageService ImageService { get; }
+        public IBookingService BookingService { get; }
+        public IBookingPaymentService BookingPaymentService { get; }
 
     }
 }
