@@ -12,7 +12,7 @@ namespace Services.Abstraction
     {
         Task<IEnumerable<ServiceDto>> GetAllAsync();
         Task<ServiceDto> GetByIdAsync(Guid serviceId);
-        Task<Guid> CreateAsync(CreateServicesDto dto);
+        Task<ServiceDto> CreateAsync(CreateServicesDto dto);
         Task UpdateAsync(Guid serviceId, UpdateServiceDto dto);
         Task DeleteAsync(Guid serviceId);
     }

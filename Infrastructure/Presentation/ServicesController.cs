@@ -33,7 +33,6 @@ namespace Presentation
             return Ok(design);
         }
 
-        // POST: api/Services
         [HttpPost]
         [ProducesResponseType(typeof(ServiceDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,9 +49,9 @@ namespace Presentation
                 dto.ImageUrl = $"{Request.Scheme}://{Request.Host}{mainImagePath}";
             }
 
-            var id = await _serviceManager.ServicesWorkService.CreateAsync(dto);
-            var design = await _serviceManager.ServicesWorkService.GetByIdAsync(id);
-            return CreatedAtAction(nameof(GetById), new { id }, design);
+            var createdService = await _serviceManager.ServicesWorkService.CreateAsync(dto);
+
+            return CreatedAtAction(nameof(GetById), new { id = createdService.ServiceId }, createdService);
         }
 
         // PUT: api/DesignTemplate/{id}

@@ -50,6 +50,7 @@ namespace Services
                 name = dto.Name,
                 category = dto.Category,
                 price = dto.Price,
+                details = dto.Details,
                 stockAmount = dto.StockAmount,
                 imageUrl = dto.ImageUrl ?? string.Empty,
                 isPackage = dto.isPackage
@@ -65,6 +66,7 @@ namespace Services
                 throw new ProductNotFoundException(productId);
             product.name = dto.Name;
             product.category = dto.Category;
+            product.details = dto.Details;
             product.price = dto.Price;
             product.stockAmount = dto.StockAmount;
             if (!string.IsNullOrWhiteSpace(dto.ImageUrl))
@@ -88,6 +90,7 @@ namespace Services
             Name = product.name,
             Category = product.category,
             Price = product.price,
+            Details = product.details,
             StockAmount = product.stockAmount,
             imageUrl = string.IsNullOrEmpty(product.imageUrl)
                 ? string.Empty

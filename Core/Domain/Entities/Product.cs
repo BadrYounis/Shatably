@@ -6,8 +6,9 @@ public class Product
     public Guid productId { get; set; }
     public string name { get; set; }
     public string category { get; set; }
+    public string details { get; set; }
     public decimal price { get; set; }
-    public int stockAmount { get; set; }
+    public int? stockAmount { get; set; }
     public bool isPackage { get; set; }
-    public string imageUrl { get; set; }
+    public string? imageUrl { get; set; }
 }

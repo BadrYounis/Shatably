@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Shared;
+﻿namespace Shared;
 public class AddUserDto
 {
     public string UserName { get; set; }

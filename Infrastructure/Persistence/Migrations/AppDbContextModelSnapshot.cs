@@ -126,8 +126,11 @@ namespace Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("imageUrl")
+                    b.Property<string>("details")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("imageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isPackage")
@@ -141,7 +144,7 @@ namespace Persistence.Migrations
                     b.Property<decimal>("price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("stockAmount")
+                    b.Property<int?>("stockAmount")
                         .HasColumnType("int");
 
                     b.HasKey("productId");
@@ -250,6 +253,9 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double>("AverageRating")
+                        .HasColumnType("float");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -272,6 +278,9 @@ namespace Persistence.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("ReviewCount")
+                        .HasColumnType("int");
+
                     b.HasKey("ServiceId");
 
                     b.ToTable("ServicesWorks");
@@ -282,6 +291,9 @@ namespace Persistence.Migrations
                     b.Property<Guid>("workerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("About")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Acceptence")
                         .HasColumnType("int");

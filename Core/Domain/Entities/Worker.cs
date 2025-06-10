@@ -7,6 +7,7 @@ public class Worker
     public string fullName { get; set; }
     public string email { get; set; }
     public string phoneNumber { get; set; }
+    public string? About { get; set; }
     public Type? Type { get; set; }
     public Acceptence? Acceptence { get; set; }
     public string? ProfilePhotoUrl { get; set; }
@@ -20,10 +21,10 @@ public class Worker
 public enum Type
 {
     Electrician,
-    Carpenter,
-    Painter,
-    Plumber,
-    Maid
+    Carpentry,
+    painting,
+    plumbing,
+    Cleaning
 }
 public enum Acceptence
 {

@@ -55,6 +55,7 @@ public class WorkerService : IWorkerService
             ProfilePhotoUrl = dto.ProfilePhotoUrl,
             Price = dto.Price,
             Experience= dto.Experience,
+            About = dto.About
         };
 
         await _workerRepository.Value.AddAsync(worker);
@@ -79,6 +80,7 @@ public class WorkerService : IWorkerService
         worker.ProfilePhotoUrl = dto.ProfilePhotoUrl;
         worker.Price = dto.Price;
         worker.Experience = dto.Experience;
+        worker.About = dto.About;
     
         _workerRepository.Value.Update(worker);
         await _unitOfWork.SaveChangesAsync();
@@ -110,6 +112,7 @@ public class WorkerService : IWorkerService
                 ? string.Empty
                 : $"{worker.ProfilePhotoUrl}",
             Price = worker.Price,
+            About = worker.About,
             Experience = worker.Experience,
             RatingReview = (worker.RatingReviews != null && worker.RatingReviews.Any())
                          ? worker.RatingReviews.Select(r => new RatingReviewDto
