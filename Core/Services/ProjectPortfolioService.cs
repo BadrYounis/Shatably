@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Services.Abstraction;
 using Services.Specifications;
 using Shared;
+using Shared.Dtos;
 
 namespace Services
 {
@@ -33,7 +34,6 @@ namespace Services
         public async Task<ProjectPortfolioDto> GetByIdAsync(Guid projectId)
         {
             var project = await _projectRepository.Value.GetByIdAsync(new ProjectSpecifications(projectId));
-            // var project = await _unitOfWork.GetRepository<ProjectPortfolio,Guid>().GetByIdAsync(new ProjectSpecifications(projectId));
             if (project is null)
                 throw new ProjectPortfolioNotFoundException(projectId);
             return MapToDto(project);
@@ -47,7 +47,7 @@ namespace Services
                 description = dto.Description,
                 MainImageUrl = dto.mainImageUrl!,
                 Images = dto.ImageUrls?.Select(url => new ProjectImages { ImageUrl = url }).ToList()!,
-                createdDate = DateTime.UtcNow,
+                HourService = dto.HourService,
                 Price = dto.Price ?? 0m,
             };
 
@@ -94,6 +94,17 @@ namespace Services
                 Title = project.Title,
                 Description = project.description,
                 Price=project.Price,
+                HourService = project.HourService,
+                RatingReview = (project.RatingReviews != null && project.RatingReviews.Any())
+                         ? project.RatingReviews.Select(r => new RatingReviewDto
+                         {
+                             ClientId = r.ClientId,
+                             Rating = r.Rating,
+                             Comment = r.Comment ?? string.Empty,
+                             CreatedAt = r.CreatedAt,
+                             ReviewId = r.ReviewId
+                         }).ToList()
+                         : new List<RatingReviewDto>(),
                 mainImageUrl = string.IsNullOrEmpty(project.MainImageUrl)
                 ? string.Empty
                 : $"{project.MainImageUrl}",
@@ -102,15 +113,9 @@ namespace Services
             project.Images
                 .Where(i => !string.IsNullOrEmpty(i.ImageUrl))
                 .Select(i => $"{i.ImageUrl}")
-          )
-        : new HashSet<string>(),
-
-                CreatedDate = project.createdDate
+        )
+        : new HashSet<string>()
             };
         }
-
-
-
-
     }
 }

@@ -7,6 +7,8 @@ public class ProjectPortfolio
     public string MainImageUrl { get; set; }
     public DateTime createdDate { get; set; }
     public decimal Price { get; set; }
+    public double HourService { get; set; }
+    public string HourServiceDisplay => $"{HourService} Hour Service";
     public ICollection<ProjectImages> Images { get; set; } = new HashSet<ProjectImages>();
     public ICollection<RatingReview> RatingReviews { get; set; } = new HashSet<RatingReview>();
     public ICollection<ServiceBooking> ServiceBookings { get; set; } = new HashSet<ServiceBooking>();

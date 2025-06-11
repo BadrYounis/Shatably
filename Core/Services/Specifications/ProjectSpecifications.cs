@@ -9,6 +9,7 @@ namespace Services.Specifications
         public ProjectSpecifications(Guid Id):base(project=>project.projectId==Id)
         {
             AddInclude(p => p.Images); // Include الصور
+            AddInclude(p=>p.RatingReviews);
         }
         public ProjectSpecifications(ProjectSpecificationsParameters parameters)
            : base(project =>
@@ -17,7 +18,8 @@ namespace Services.Specifications
            (string.IsNullOrWhiteSpace(parameters.Search) || project.Title.ToLower().Contains(parameters.Search.ToLower().Trim()))
            )
         {
-            //AddInclude(p => p.Title);
+            AddInclude(p => p.RatingReviews);
+            AddInclude(p => p.Images);
 
             if (parameters.Sort is not null)
             {

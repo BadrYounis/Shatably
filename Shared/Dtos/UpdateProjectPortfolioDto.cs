@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
-
-namespace Shared;
+﻿namespace Shared;
 public class UpdateProjectPortfolioDto
 {
     public string Title { get; set; }

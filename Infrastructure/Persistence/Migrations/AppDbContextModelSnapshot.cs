@@ -178,6 +178,9 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double>("HourService")
+                        .HasColumnType("float");
+
                     b.Property<string>("MainImageUrl")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -225,8 +228,8 @@ namespace Persistence.Migrations
                     b.Property<Guid?>("ProjectPortfolioId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
 
                     b.Property<Guid?>("ServicesWorkServiceId")
                         .HasColumnType("uniqueidentifier");
